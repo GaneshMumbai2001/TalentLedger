@@ -11,6 +11,8 @@ import ProtectedNavbar from "../Components/ProctedNavbar";
 import heartOutline from "../../assets/heart.svg";
 import heartFilled from "../../assets/heartFilled.svg";
 import JobModel from "../Components/JobModel/Model";
+import { getDIDInfos } from "@/config/BlockchainServices";
+import { ethers } from "ethers";
 
 type JobIdType = string | number;
 
@@ -134,7 +136,22 @@ function Page() {
     setSelectedJob(job);
     setIsModalOpen(true);
   };
-
+  const [address, setAddress] = useState<string>();
+  const [diddata, setdiddata] = useState<string>();
+  useEffect(() => {
+    async function initialize() {
+      if (typeof window.ethereum !== undefined) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setAddress(address);
+        const getdid = await getDIDInfos(address);
+        console.log("get", getdid);
+        setdiddata(getdid);
+      }
+    }
+    initialize();
+  });
   const closeModal = () => setIsModalOpen(false);
   useEffect(() => {
     if (isModalOpen) {

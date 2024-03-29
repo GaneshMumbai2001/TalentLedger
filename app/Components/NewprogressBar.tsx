@@ -2,7 +2,7 @@ import React from "react";
 
 export const NewprogressBar = ({ currentStep, selectedRole }) => {
   const steps =
-    selectedRole === "provider"
+    selectedRole === "Provider"
       ? [
           { name: "Choose one", number: 1 },
           { name: "Create User ID", number: 2 },

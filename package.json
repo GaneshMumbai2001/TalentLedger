@@ -19,6 +19,7 @@
     "axios": "^1.6.7",
     "cors": "^2.8.5",
     "country-list": "^2.3.0",
+    "create-eth": "^0.0.35",
     "ethers": "^5.7.2",
     "langchain": "^0.0.207",
     "next": "14.0.1",

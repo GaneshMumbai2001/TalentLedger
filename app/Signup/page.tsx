@@ -45,16 +45,17 @@ import ProctedNav from "../Components/ProctedNav";
 import OnboardingNav from "../Components/OnboardingNav";
 import { NewprogressBar } from "../Components/NewprogressBar";
 import { FaPlus } from "react-icons/fa";
+import bs58 from "bs58";
 
 function Page() {
   const [name, setName] = useState("");
-
   const [did2, setId] = useState("");
+  const [Providername, setProvidername] = useState("");
   const [lastName, setLastName] = useState("");
-  const [providerlastname, setproviderlastname] = useState("");
-  const [provideremail, setprovideremail] = useState("");
-  const [providertwitter, setprovidertwitter] = useState("");
-  const [providerdiscord, setproviderdiscord] = useState("");
+  const [Providerlastname, setProviderlastname] = useState("");
+  const [Provideremail, setProvideremail] = useState("");
+  const [Providertwitter, setProvidertwitter] = useState("");
+  const [Providerdiscord, setProviderdiscord] = useState("");
   const [email, setEmail] = useState("");
   const [designation, SetDesignation] = useState("");
   const [bio, setBio] = useState("");
@@ -315,6 +316,23 @@ which i can simply parse it as json.
       setNewSkill("");
     }
   };
+  const ipfsHashToBytes32 = (ipfsHash) => {
+    const trimmedHash = ipfsHash.trim();
+
+    try {
+      const bytes = bs58.decode(trimmedHash);
+      let hexString = bytes.toString("hex");
+
+      if (hexString.length > 64) {
+        hexString = hexString.substring(0, 64);
+      }
+
+      return "0x" + hexString;
+    } catch (error) {
+      console.error("Error decoding IPFS hash:", error.message);
+      throw error;
+    }
+  };
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -416,16 +434,16 @@ which i can simply parse it as json.
   useEffect(() => {
     async function initialize() {
       if (typeof window.ethereum !== undefined) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
+        const Provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = Provider.getSigner();
         const address = await signer.getAddress();
-        const did = await RetreiveByAddress({ address });
-        setDid(did);
+        // const did = await RetreiveByAddress({ address });
+        // setDid(did);
         setAddress(address);
       }
     }
     initialize();
-  });
+  }, []);
   const token = useSelector((state: RootState) => state.auth.token);
 
   const handleImageUpload = (e) => {
@@ -439,99 +457,150 @@ which i can simply parse it as json.
     }
   };
   const dispatch = useDispatch();
-
+  const [ipfsHash, setipfshash] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     dispatch(setEmailtostore(email));
-    setIsLoading(true);
-    const did = did2;
-    const tokenId = await createdid({ did });
-    if (!tokenId) {
-      console.warn("Token ID was not generated.");
-      setIstriggered(false);
-      return;
-    }
-    const postData = {
-      signature: tokenId.userSignature,
-      address: address,
-      did: tokenId.didBytes32,
-      v: tokenId.v,
-      r: tokenId.r,
-      s: tokenId.s,
-      message: tokenId.messageBytes32,
-      type: selectedRole,
-    };
 
     try {
-      const responses = await fetch(
-        "https://gigshub-v1.vercel.app/api/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(postData),
-        }
-      );
+      const pinataResponse = await pinJSONToIPFS();
+      console.log("Pinata Response:", pinataResponse.IpfsHash);
+      // setipfshash();
+      const ipfsHash = pinataResponse.IpfsHash;
+      console.log("Decoding IPFS hash:", ipfsHash);
+      // Proceed to decode the hash here
 
-      if (!responses.ok) {
-        toast.error("User Already Exist!");
-        setIsLoading(false);
-      }
-      const datas = await responses.json();
-      const token = datas?.token;
-      dispatch(setToken({ token }));
-      const filehash = selectedFile?.IpfsHash;
-      const data = {
-        personalInformation: {
-          name,
-          lastName,
-          email,
-          bio,
-          designation,
-          profileImage,
-          filehash,
-        },
-        workExperiences,
-        academicProjects,
-        links,
-        skills,
-        achievements,
-      };
-
-      // if (selectedRole == "Dev") {
-      //   const backenddata = [postData, data];
-      // } else {
-      //   console.log("integration data for provider", postData);
-      // }
-      const response = await fetch(
-        "https://gigshub-v1.vercel.app/api/create-resume",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${datas?.token}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      if (response.ok) {
+      console.log("did", { address, selectedRole, ipfsHash });
+      if (selectedRole == "Provider") {
+        const role = 0;
+        await createdid({ address, role, ipfsHash });
+        const userDetails = { address, role, ipfsHash };
+        dispatch(setToken(userDetails));
         toast.success("Happy to Onboard to our platform!");
-        router.push("/Home");
+        router.push("/Dashboard");
       } else {
-        console.warn("Submission failed.");
-        const errorData = await response.json();
-        console.error("Error data:", errorData);
+        const role = 1;
+        await createdid({ address, role, ipfsHash });
+        toast.success("Happy to Onboard to our platform!");
+        router.push("/FreelancerDashboard");
+      }
+
+      if (step < 6) {
+        setStep(step + 1);
       }
     } catch (error) {
       console.error("Error in form submission:", error);
+      toast.error("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
-
-    if (step < 6) {
-      setStep(step + 1);
-    }
   };
+
+  async function pinJSONToIPFS() {
+    if (selectedRole == "Developer") {
+      const pinataContent = {
+        name: name,
+        lastName: lastName,
+        email: email,
+        skills: skills,
+        links: links,
+        workExperiences: workExperiences,
+        designation: designation,
+        description: bio,
+        profileImage: profileImage,
+        achievements: achievements,
+      };
+      const options = {
+        method: "POST",
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1Y2FiZTdkYS1hMTliLTQxMmYtOWQ2OS1mYjAyZGU3NzFmZWMiLCJlbWFpbCI6Im12YWlyYW11dGh1MjAwM0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMjQyMTczZTNiYTAyM2IwM2Y5NjAiLCJzY29wZWRLZXlTZWNyZXQiOiIyMTZhMWNjNjYxMTcyOWExMTI4MDk1YzdhMGNlYzU2ZTllMWUyYzQzZjk4ZDk2YjUzMzI2MmE1Y2Q1ZDU1OThmIiwiaWF0IjoxNzExNzE3NDYzfQ.Aw5Qw9NLtZnTnUhSiPXKWrkRR1bUY9HzHCxeOdgAxPM",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pinataContent: pinataContent,
+          pinataMetadata: {
+            name: "pinnie.json",
+          },
+          pinataOptions: {
+            cidVersion: 1,
+          },
+        }),
+      };
+
+      const response = await fetch(
+        "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        options
+      );
+      if (!response.ok) throw new Error("Failed to pin JSON to IPFS");
+      return response.json();
+    } else {
+      const pinataContent = {
+        role: selectedRole,
+        Providername: Providername,
+        Providerlastname: Providerlastname,
+        Provideremail: Provideremail,
+        Providertwitter: Providertwitter,
+        Providerdiscord: Providerdiscord,
+        entergig: entergig,
+        timeline: timeline,
+        pay: pay,
+        gigskills: gigskills,
+        gigsummary: gigsummary,
+      };
+      const options = {
+        method: "POST",
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1Y2FiZTdkYS1hMTliLTQxMmYtOWQ2OS1mYjAyZGU3NzFmZWMiLCJlbWFpbCI6Im12YWlyYW11dGh1MjAwM0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMjQyMTczZTNiYTAyM2IwM2Y5NjAiLCJzY29wZWRLZXlTZWNyZXQiOiIyMTZhMWNjNjYxMTcyOWExMTI4MDk1YzdhMGNlYzU2ZTllMWUyYzQzZjk4ZDk2YjUzMzI2MmE1Y2Q1ZDU1OThmIiwiaWF0IjoxNzExNzE3NDYzfQ.Aw5Qw9NLtZnTnUhSiPXKWrkRR1bUY9HzHCxeOdgAxPM",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pinataContent: pinataContent,
+          pinataMetadata: {
+            name: "pinnie.json",
+          },
+          pinataOptions: {
+            cidVersion: 1,
+          },
+        }),
+      };
+
+      const response = await fetch(
+        "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        options
+      );
+      if (!response.ok) throw new Error("Failed to pin JSON to IPFS");
+      console.log("hash", response.json);
+      return response.json();
+    }
+  }
+
+  async function submitFormData() {
+    // Assuming `address` and `selectedRole` are gathered from your application state or inputs
+    const userDetails = {
+      address: address, // Make sure this is the user's blockchain address
+      role: selectedRole, // Ensure this is aligned with the roles defined in your smart contract
+      ipfsHash: ipfsHash, // This is the IPFS hash of the user's data
+    };
+    console.log("userdetails", userDetails);
+    const response = await fetch("https://gigshub-v1.vercel.app/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Important for server to correctly parse JSON body
+      },
+      body: JSON.stringify(userDetails),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "User Already Exist!");
+    }
+    const result = await response.json();
+    // Handle the result here, such as updating UI or redirecting the user
+  }
+
   const fileInputRef = useRef(null);
   const [ellipsis, setEllipsis] = useState("");
 
@@ -565,7 +634,7 @@ which i can simply parse it as json.
           <NewprogressBar
             currentStep={step}
             selectedRole={selectedRole}
-            // totalSteps={selectedRole == "provider" ? 2 : 6}
+            // totalSteps={selectedRole == "Provider" ? 2 : 6}
           />
         </div>
         {step === 1 && (
@@ -578,15 +647,15 @@ which i can simply parse it as json.
 
                 <div className="flex flex-col md:flex-row mt-4  md:mt-5 px-4 md:px-10 space-y-4 md:space-y-0 md:space-x-10 justify-center">
                   <div
-                    onClick={() => handleRoleSelect("provider")}
+                    onClick={() => handleRoleSelect("Provider")}
                     className={` cursor-pointer bg-[#FFFFFF] w-72  hover:bg-[#ffffffb2] rounded-xl py-4 px-8 ${getOpacityClass(
-                      "provider"
+                      "Provider"
                     )}`}
                   >
                     <div className="flex justify-between">
                       <Image
                         src={role1}
-                        alt="Developer Role"
+                        alt="Developereloper Role"
                         width={35}
                         height={35}
                         className="my-2"
@@ -594,14 +663,14 @@ which i can simply parse it as json.
                       <div>
                         <button
                           className={`ml-4    ${
-                            selectedRole === "provider"
+                            selectedRole === "Provider"
                               ? " border-2 rounded-full border-[#009DB5]"
                               : "border-gray-300"
                           }`}
                         >
                           <p
                             className={`  ${
-                              selectedRole === "provider"
+                              selectedRole === "Provider"
                                 ? "bg-[#009DB5] rounded-full border-2 w-4 h-4"
                                 : " rounded-full border-2 w-4 h-4"
                             } `}
@@ -615,9 +684,9 @@ which i can simply parse it as json.
                     </p>
                   </div>
                   <div
-                    onClick={() => handleRoleSelect("Dev")}
+                    onClick={() => handleRoleSelect("Developer")}
                     className={` cursor-pointer bg-[#FFFFFF] w-72  rounded-xl hover:bg-[#ffffffb2] py-4 px-8 ${getOpacityClass(
-                      "Dev"
+                      "Developer"
                     )}`}
                   >
                     <div className="flex justify-between">
@@ -631,14 +700,14 @@ which i can simply parse it as json.
                       <div>
                         <button
                           className={`ml-4    ${
-                            selectedRole === "Dev"
+                            selectedRole === "Developer"
                               ? " border-2 rounded-full border-[#009DB5]"
                               : "border-gray-300"
                           }`}
                         >
                           <p
                             className={`  ${
-                              selectedRole === "Dev"
+                              selectedRole === "Developer"
                                 ? "bg-[#009DB5] rounded-full border-2 w-4 h-4"
                                 : " rounded-full border-2 w-4 h-4"
                             } `}
@@ -653,7 +722,7 @@ which i can simply parse it as json.
                   </div>
                 </div>
                 <div className="flex justify-center  mt-3 rounded-lg text-center text-black font-bold text-lg">
-                  {selectedRole === "provider" ? (
+                  {selectedRole === "Provider" ? (
                     <button
                       onClick={() => setStep(step + 1)}
                       className="text-lg md:mt-5 px-5 py-2 flex rounded-2xl bg-[#009DB5] "
@@ -679,7 +748,7 @@ which i can simply parse it as json.
             </div>
           </>
         )}
-        {selectedRole === "provider" && step === 2 && (
+        {selectedRole === "Provider" && step === 2 && (
           <>
             <div className="  rounded-2xl md:mx-80 mx-7 px-5 md:px-20  ">
               <p className="text-center text-black font-bold text-2xl md:text-4xl">
@@ -693,8 +762,8 @@ which i can simply parse it as json.
                   <div>
                     <label className="text-[#747474]">First name *</label>
                     <input
-                      value={did2}
-                      onChange={(e) => setId(e.target.value)}
+                      value={Providername}
+                      onChange={(e) => setProvidername(e.target.value)}
                       onKeyDown={handleKeyPress}
                       className="bg-transparent outline-none pl-3 text-black border border-[#DCDCDC] md:w-[250px] w-20 rounded-xl py-2 "
                     />
@@ -702,8 +771,8 @@ which i can simply parse it as json.
                   <div>
                     <label className="text-[#747474]">Last name *</label>
                     <input
-                      value={providerlastname}
-                      onChange={(e) => setproviderlastname(e.target.value)}
+                      value={Providerlastname}
+                      onChange={(e) => setProviderlastname(e.target.value)}
                       onKeyDown={handleKeyPress}
                       className="bg-transparent outline-none pl-3 text-black border border-[#DCDCDC] md:w-[250px] w-20 rounded-xl py-2 "
                     />
@@ -713,8 +782,8 @@ which i can simply parse it as json.
                   <label className="text-[#747474]">Work email address</label>
                   <br />
                   <input
-                    value={provideremail}
-                    onChange={(e) => setprovideremail(e.target.value)}
+                    value={Provideremail}
+                    onChange={(e) => setProvideremail(e.target.value)}
                     type="email"
                     onKeyDown={handleKeyPress}
                     className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
@@ -724,8 +793,8 @@ which i can simply parse it as json.
                   <label className="text-[#747474]">Twitter URL</label>
                   <br />
                   <input
-                    value={providertwitter}
-                    onChange={(e) => setprovidertwitter(e.target.value)}
+                    value={Providertwitter}
+                    onChange={(e) => setProvidertwitter(e.target.value)}
                     onKeyDown={handleKeyPress}
                     className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
                   />
@@ -734,8 +803,8 @@ which i can simply parse it as json.
                   <label className="text-[#747474]">Discord URL</label>
                   <br />
                   <input
-                    value={providerdiscord}
-                    onChange={(e) => setproviderdiscord(e.target.value)}
+                    value={Providerdiscord}
+                    onChange={(e) => setProviderdiscord(e.target.value)}
                     onKeyDown={handleKeyPress}
                     className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
                   />
@@ -750,7 +819,7 @@ which i can simply parse it as json.
             </div>
           </>
         )}
-        {selectedRole === "provider" && step === 3 && (
+        {selectedRole === "Provider" && step === 3 && (
           <>
             <div className="  rounded-2xl md:mx-80 mx-7 px-5 md:px-20  ">
               <div className="flex flex-col  items-center space-y-5 py-6 rounded-lg bg-white justify-center mt-5 ">
@@ -797,7 +866,7 @@ which i can simply parse it as json.
                   <br />
                   <input
                     value={gigskills}
-                    onChange={(e) => setprovideremail(e.target.value)}
+                    onChange={(e) => setProvideremail(e.target.value)}
                     type="email"
                     onKeyDown={handleKeyPress}
                     className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
@@ -837,7 +906,7 @@ which i can simply parse it as json.
           </>
         )}
 
-        {selectedRole === "Dev" && step === 2 && (
+        {selectedRole === "Developer" && step === 2 && (
           <>
             <div className=" flex  px-5 mx-2 text-center rounded-lg  md:px-10 md:mx-40 justify-center">
               <div>
@@ -910,7 +979,7 @@ which i can simply parse it as json.
             </div>
           </>
         )}
-        {selectedRole === "Dev" && step === 3 && (
+        {selectedRole === "Developer" && step === 3 && (
           <>
             <p className="text-center text-black text-2xl md:text-4xl font-bold">
               Let's get started
@@ -1400,31 +1469,11 @@ which i can simply parse it as json.
             </div>
           </>
         )}
-        {step === 6 && (
-          <>
-            <div className="md:mt-16 mt-24 signbg rounded-2xl md:mx-40 mx-7 px-5 md:px-20 py-5 md:py-28">
-              <p className="text-center text-white font-bold text-2xl md:text-5xl">
-                Get Your Personal <span className="signuptext">GIGID</span> Now!
-              </p>
-              <p className="text-center mx-2 text-white text-sm md:mx-0 md:text-lg font-bold mt-2">
-                “Unlock the Future of Job Hunting with Your Personalized GIGID”
-              </p>
-              <div className="flex justify-center mt-5 md:mt-8">
-                <input
-                  value={did2}
-                  onChange={(e) => setId(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder="Choose your handle Id"
-                  className="bg-transparent outline-none text-white border border-white md:w-[500px] w-72 rounded-xl py-2 pl-3"
-                />
-              </div>
-            </div>
-          </>
-        )}
+
         <div className="flex flex-col mt-5  md:mt-0 justify-center">
-          {selectedRole === "Dev" &&
+          {selectedRole === "Developer" &&
           ((step === 2 && isUploading === false && selectedFile) ||
-            (step >= 3 && step < 6)) ? (
+            (step >= 3 && step < 5)) ? (
             <button
               onClick={() => setStep(step + 1)}
               disabled={isLoading}
@@ -1436,7 +1485,7 @@ which i can simply parse it as json.
             </button>
           ) : null}
 
-          {step === 3 && selectedRole == "provider" && (
+          {step === 3 && selectedRole == "Provider" && (
             <button
               onClick={handleSubmit}
               disabled={isLoading}
@@ -1453,7 +1502,7 @@ which i can simply parse it as json.
               )}
             </button>
           )}
-          {step === 6 && (
+          {step === 5 && (
             <button
               onClick={handleSubmit}
               disabled={isLoading}

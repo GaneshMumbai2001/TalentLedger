@@ -1,20 +1,6 @@
 import Web3 from "web3";
 import { ethers } from "ethers";
-import escrowabi from "../contracts/EscrowABI.json";
-import gigidabi from "../contracts/GigIdABI.json";
-import gighubabi from "../contracts/GigsHubABI.json";
-import TokenEscrow from "../contracts/TokenEscrow.json";
-import Token from "../contracts/TokenABI.json";
-import { useDispatch } from "react-redux";
-import {
-  setDid,
-  setDidBytes32,
-  setSignature,
-  setV,
-  setR,
-  setS,
-  setMessage,
-} from "../store/action";
+import Token from "../contracts/did.json";
 
 const isBrowser = () => typeof window !== "undefined";
 const { ethereum } = isBrowser();
@@ -22,14 +8,9 @@ if (ethereum) {
   isBrowser().web3 = new Web3(ethereum);
   isBrowser().web3 = new Web3(isBrowser().web3.currentProvider);
 }
-const gigidadd = "0x821237A1A5f060E165C4Cb727a104088b9d5B807";
-const gighubadd = "0xa6Fc9B6111c8a3C52E986c725da9cF81aEA445b1";
-const escrowadd = "0x6E4022F86663326795849017A6eb5596cd5f22A3";
+const gigidadd = "0x9618D1c5f4A80947Ac7dA394cF2aC56aB2920FA9";
 
-const tokenadd = "0x8540Ddc6fd5C996bf94569174dBc3aa79d7b740b";
-const tokenescrow = "0x1FD75e66824F12896E13f740300CC22422013d89";
-
-export const createdid = async ({ did }) => {
+export const createdid = async ({ address, role, ipfsHash }) => {
   if (!window.ethereum) {
     throw new Error("Ethereum object not found, install MetaMask.");
   }
@@ -38,36 +19,30 @@ export const createdid = async ({ did }) => {
   await provider.send("eth_requestAccounts", []);
   const signer = provider.getSigner();
 
-  console.log("Creating DID");
+  const Role = new ethers.Contract(gigidadd, Token, signer);
 
-  const message = "Happy to Onboard you";
-  const messageBytes32 = ethers.utils.formatBytes32String(message);
-  const userSignature = await signer.signMessage(
-    ethers.utils.arrayify(messageBytes32)
-  );
-  const serverPrivateKey =
-    "ec7a98c5a34e586ce08168dea9176d74186349b1bf56c336ca861a416367136a";
-  const serverWallet = new ethers.Wallet(serverPrivateKey, provider);
+  const tokenId = await Role.registerDID(address, role, ipfsHash);
+  console.log(tokenId);
+  return tokenId;
+};
 
-  const Role = new ethers.Contract(gigidadd, gigidabi, serverWallet);
+export const getDIDInfos = async (address) => {
+  if (!window.ethereum) {
+    throw new Error("Ethereum object not found, install MetaMask.");
+  }
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  console.log("Address requested:", address);
+  const contract = new ethers.Contract(gigidadd, Token, signer);
 
-  const didBytes32 = ethers.utils.formatBytes32String(did);
-  console.log("did", didBytes32);
-  console.log("userSignature", userSignature);
-  console.log("messageBytes32", messageBytes32);
-  const r = userSignature.slice(0, 66);
-  const s = "0x" + userSignature.slice(66, 130);
-  const v = parseInt(userSignature.slice(130, 132), 16);
-  console.log({ r, s, v });
-  return {
-    did,
-    didBytes32,
-    userSignature,
-    r,
-    s,
-    v,
-    messageBytes32,
-  };
+  try {
+    const didInfo = await contract.getDIDInfo(address);
+    console.log("DID Info:", didInfo);
+    return didInfo;
+  } catch (error) {
+    console.error("Error fetching DID info:", error);
+    throw error;
+  }
 };
 
 export const Checkdid = async ({ did }) => {
@@ -77,9 +52,6 @@ export const Checkdid = async ({ did }) => {
       : ethers.providers.getDefaultProvider();
   const signer = provider.getSigner();
   const Role = new ethers.Contract(gigidadd, gigidabi, signer);
-  const tokenId = await Role.Check(did);
-  console.log(tokenId);
-  return tokenId;
 };
 export const CheckTokenBalance = async ({ address }) => {
   console.log("address", address);

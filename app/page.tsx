@@ -38,7 +38,8 @@ import Link from "next/link";
 import { ethers } from "ethers";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setToken } from "@/store/action";
+import { setDIDInfo, setToken } from "@/store/action";
+
 import {
   FaAngleDown,
   FaArrowLeft,
@@ -53,6 +54,7 @@ import { MdArrowOutward } from "react-icons/md";
 import { DisableSSR } from "@/utils/disable-ssr";
 import logo from "../assets/croplogo.svg";
 import { FaXTwitter } from "react-icons/fa6";
+import { getDIDInfo, getDIDInfos } from "@/config/BlockchainServices";
 
 interface SearchProps {
   onSearch?: (searchTerm: string) => void;
@@ -66,7 +68,26 @@ export default function Home({ onSearch }: SearchProps) {
   const router = useRouter();
   const dispatch = useDispatch();
   const [balance, setbalance] = useState();
+  const [diddata, setdiddata] = useState<string>();
 
+  useEffect(() => {
+    async function initialize() {
+      if (typeof window.ethereum !== undefined) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setAddress(address);
+        const getdid = await getDIDInfos(address);
+        console.log("get", getdid);
+        setdiddata(getdid);
+        if (getdid.length === 3) {
+          const [isSuccessful, errorCode, dataHash] = getdid;
+          dispatch(setDIDInfo(isSuccessful, errorCode, dataHash));
+        }
+      }
+    }
+    initialize();
+  }, []);
   const formatNumber = (num) => {
     if (num >= 1000) {
       return (num / 1000).toFixed(1) + "k";

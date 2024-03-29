@@ -6,9 +6,7 @@ const jwt = require("jsonwebtoken");
 const { ethers } = require("ethers");
 const { Octokit } = require("@octokit/core");
 
-const abi = require("../helpers/abi.json");
-
-const tokenAbi = require("../helpers/token.json");
+const abi = require("../helpers/did.json");
 
 const verifyToken = (req, res, next) => {
   console.log("Token verification");
@@ -30,29 +28,8 @@ const verifyToken = (req, res, next) => {
   );
 };
 
-async function transferTokensInBackground(wallet, address, amount) {
-  const tokenContract = new ethers.Contract("", tokenAbi, wallet);
-  try {
-    const val = ethers.utils.parseUnits(amount, "wei");
-
-    const transferPromise = await tokenContract.transfer(address, val);
-    await transferPromise.wait();
-
-    console.log("transfer", transferPromise);
-  } catch (error) {
-    console.error(`Error transferring tokens to ${address}: ${error}`);
-  }
-}
-
 router.post("/register", async (req, res) => {
-  const { signature, address, did, v, r, s, message, type } = req.body;
-
   try {
-    const existingUser = await User.findOne({ address });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already registered" });
-    }
-
     const provider = new ethers.providers.JsonRpcProvider(
       "https://polygon-mumbai.g.alchemy.com/v2/gOG88l1cDipGocv9D-5tprcpQO-xI0a4"
     );
@@ -61,28 +38,13 @@ router.post("/register", async (req, res) => {
       provider
     );
     const contract = new ethers.Contract(
-      "0x821237A1A5f060E165C4Cb727a104088b9d5B807",
+      "0xF9dD8F1372Ba91B16CEC0d87Eb83416d96D83c83",
       abi,
       wallet
     );
-
-    const transaction = await contract.Create(did, message, v, r, s);
+    const transaction = await contract.registerDID(address, role, ipfsHash);
     await transaction.wait();
-
-    const newUser = await User.create({
-      signature: signature,
-      persona: type,
-      address: address,
-      did: did,
-    });
-
-    const token = jwt.sign(
-      { userId: newUser._id, did: did },
-      "048af2438891a89a3536ac09cc96ccbd34a1714e88cf8fdb63e6186dcc3ff89d",
-      { expiresIn: "24h" }
-    );
     res.status(200).json({ message: "Registration successful!", token });
-    transferTokensInBackground(wallet, address, "100000000000000000000");
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

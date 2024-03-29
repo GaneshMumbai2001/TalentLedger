@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import contributor1 from "../../assets/contributor1.svg";
 import contributor2 from "../../assets/contributor2.svg";
@@ -7,6 +7,9 @@ import contributor3 from "../../assets/contributor3.svg";
 import star from "../../assets/star.svg";
 import ProtectedNavbar from "../Components/ProctedNavbar";
 import Link from "next/link";
+import { ethers } from "ethers";
+
+import { getDIDInfos } from "@/config/BlockchainServices";
 
 interface DeveloperData {
   title: string;
@@ -63,6 +66,24 @@ const Dashboard: React.FC = () => {
   const filteredDevelopers = developersData.filter((dev) =>
     dev.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const [address, setAddress] = useState<string>();
+  const [diddata, setdiddata] = useState<string>();
+
+  useEffect(() => {
+    async function initialize() {
+      if (typeof window.ethereum !== undefined) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setAddress(address);
+        const getdid = await getDIDInfos(address);
+        console.log("get", getdid);
+        setdiddata(getdid);
+      }
+    }
+    initialize();
+  });
 
   return (
     <div className="pb-10">

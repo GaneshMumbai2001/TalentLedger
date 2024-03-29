@@ -11,3 +11,10 @@ export const setEmailtostore = (email) => {
     payload: email,
   };
 };
+
+export const setDIDInfo = (isSuccessful, errorCode, dataHash) => {
+  return {
+    type: "SET_DID_INFO",
+    payload: { isSuccessful, errorCode, dataHash },
+  };
+};
