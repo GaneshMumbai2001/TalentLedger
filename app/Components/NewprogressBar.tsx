@@ -33,7 +33,7 @@ export const NewprogressBar = ({ currentStep, selectedRole }) => {
     width: "30px",
     height: "30px",
     borderRadius: "50%",
-    backgroundColor: stepNumber <= currentStep ? "#00CBA0" : "#EEE",
+    backgroundColor: stepNumber <= currentStep ? "#009DB5" : "#EEE",
     color: stepNumber <= currentStep ? "#FFF" : "#DCDCDC",
     display: "flex",
     justifyContent: "center",

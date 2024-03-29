@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import logo from "../../assets/logo3.svg";
+import logo from "../../assets/logo.svg";
 
 function OnboardingNav() {
   return (

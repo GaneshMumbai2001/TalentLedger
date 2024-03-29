@@ -135,7 +135,7 @@ const page: React.FC = () => {
       <div className="mt-5 grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4  gap-4 md:mx-8 mx-5 lg:mx-12 xl:mx-16 2xl:mx-20">
         {filteredDevelopers.length > 0 ? (
           filteredDevelopers.map((dev, index) => (
-            <div key={index} className="bg-[#FFCE4C] w-[320px] rounded-3xl">
+            <div key={index} className="bg-[#B8F6FF] w-[320px] rounded-3xl">
               <div className="flex justify-center pt-8 pb-4 items-center">
                 <Image src={dev.image} alt="home" className="h-24 w-auto" />
                 <Image

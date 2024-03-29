@@ -188,8 +188,8 @@ function Page() {
 
   const getOpacityClass = (role) => {
     return selectedRole === role
-      ? "border-[#00CBA0] border-2"
-      : "hover:border-[#00CBA0] border-2";
+      ? "border-[#009DB5] border-2"
+      : "hover:border-[#009DB5] border-2";
   };
 
   const router = useRouter();
@@ -539,7 +539,7 @@ which i can simply parse it as json.
   };
 
   return (
-    <div className=" bg-[#F3F3FF] bg-cover  bg-no-repeat min-h-screen pb-5 ">
+    <div className=" bg-[#E2FBFF] bg-cover  bg-no-repeat min-h-screen pb-5 ">
       {/* <Particle/> */}
       <OnboardingNav />
       <div className="md:pl-20">
@@ -577,14 +577,14 @@ which i can simply parse it as json.
                         <button
                           className={`ml-4    ${
                             selectedRole === "provider"
-                              ? " border-2 rounded-full border-[#00CBA0]"
+                              ? " border-2 rounded-full border-[#009DB5]"
                               : "border-gray-300"
                           }`}
                         >
                           <p
                             className={`  ${
                               selectedRole === "provider"
-                                ? "bg-[#00CBA0] rounded-full border-2 w-4 h-4"
+                                ? "bg-[#009DB5] rounded-full border-2 w-4 h-4"
                                 : " rounded-full border-2 w-4 h-4"
                             } `}
                           ></p>
@@ -614,14 +614,14 @@ which i can simply parse it as json.
                         <button
                           className={`ml-4    ${
                             selectedRole === "Dev"
-                              ? " border-2 rounded-full border-[#00CBA0]"
+                              ? " border-2 rounded-full border-[#009DB5]"
                               : "border-gray-300"
                           }`}
                         >
                           <p
                             className={`  ${
                               selectedRole === "Dev"
-                                ? "bg-[#00CBA0] rounded-full border-2 w-4 h-4"
+                                ? "bg-[#009DB5] rounded-full border-2 w-4 h-4"
                                 : " rounded-full border-2 w-4 h-4"
                             } `}
                           ></p>
@@ -638,22 +638,24 @@ which i can simply parse it as json.
                   {selectedRole === "provider" ? (
                     <button
                       onClick={() => setStep(step + 1)}
-                      className="text-lg md:mt-5 px-5 py-2 flex rounded-2xl bg-[#00CBA0] "
+                      className="text-lg md:mt-5 px-5 py-2 flex rounded-2xl bg-[#009DB5] "
                     >
                       Apply as Provider
                     </button>
                   ) : (
                     <button
                       onClick={() => setStep(step + 1)}
-                      className="text-lg md:mt-5  px-5 py-2 flex rounded-2xl bg-[#00CBA0] "
+                      className="text-lg md:mt-5  px-5 py-2 flex rounded-2xl bg-[#009DB5] "
                     >
                       Apply as Freelancer
                     </button>
                   )}
                 </div>
-                <div className="flex space-x-2 mt-5 text-center justify-center">
+                <div className="flex space-x-2 mt-5 text-center font-medium justify-center">
                   <p>Already have an account?</p>
-                  <span className="text-[#00CBA0] underline">Log In</span>
+                  <span className="text-[#009DB5] font-semibold underline">
+                    Log In
+                  </span>
                 </div>
               </div>
             </div>
@@ -760,7 +762,7 @@ which i can simply parse it as json.
                       </p>
                     </div>
                     <div className="flex justify-center">
-                      <button className="text-lg md:mt-5 px-3 py-1 flex rounded-lg border-2  border-[#00CBA0]  text-[#00CBA0]">
+                      <button className="text-lg md:mt-5 px-3 py-1 flex rounded-lg border-2  border-[#009DB5]  text-[#009DB5]">
                         SELECT FILE
                       </button>
                     </div>
@@ -781,7 +783,7 @@ which i can simply parse it as json.
                           </p>
                           <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                             <div
-                              className="bg-[#00CBA0] h-2.5 rounded-full"
+                              className="bg-[#009DB5] h-2.5 rounded-full"
                               style={{ width: `${uploadProgress}%` }}
                             ></div>
                           </div>
@@ -1316,7 +1318,7 @@ which i can simply parse it as json.
             <button
               onClick={() => setStep(step + 1)}
               disabled={isLoading}
-              className="text-lg md:mt-5 px-12 mx-auto font-semibold py-2   rounded-xl bg-[#00CBA0] text-black"
+              className="text-lg md:mt-5 px-12 mx-auto font-semibold py-2   rounded-xl bg-[#009DB5] text-black"
             >
               <span className="flex">
                 Next <AiOutlineArrowRight className="mt-2 ml-1" />
@@ -1328,7 +1330,7 @@ which i can simply parse it as json.
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="text-lg md:mt-5 px-12 mx-auto font-semibold py-2   rounded-xl bg-[#00CBA0] text-black"
+              className="text-lg md:mt-5 px-12 mx-auto font-semibold py-2   rounded-xl bg-[#009DB5] text-black"
             >
               {isLoading ? (
                 <p>GigSync{ellipsis}</p>
@@ -1345,7 +1347,7 @@ which i can simply parse it as json.
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="text-lg md:mt-5 px-12 mx-auto font-semibold py-2   rounded-xl bg-[#00CBA0] text-black"
+              className="text-lg md:mt-5 px-12 mx-auto font-semibold py-2   rounded-xl bg-[#009DB5] text-black"
             >
               {isLoading ? (
                 <p>GigMatch{ellipsis}</p>
