@@ -54,7 +54,8 @@ import { MdArrowOutward } from "react-icons/md";
 import { DisableSSR } from "@/utils/disable-ssr";
 import logo from "../assets/croplogo.svg";
 import { FaXTwitter } from "react-icons/fa6";
-import { getDIDInfo, getDIDInfos } from "@/config/BlockchainServices";
+import { getDIDInfos } from "@/config/BlockchainServices";
+import { useEthereum } from "./Components/DataContext";
 
 interface SearchProps {
   onSearch?: (searchTerm: string) => void;
@@ -62,53 +63,16 @@ interface SearchProps {
 
 export default function Home({ onSearch }: SearchProps) {
   const [visible, setVisible] = useState({});
-  const [address, setAddress] = useState<string>();
   const [did, setDid] = useState<string>();
   const [resumeHave, setResumeHave] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
-  const [balance, setbalance] = useState();
-  const [diddata, setdiddata] = useState<string>();
 
-  useEffect(() => {
-    async function initialize() {
-      if (typeof window.ethereum !== undefined) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setAddress(address);
-        const getdid = await getDIDInfos(address);
-        console.log("get", getdid);
-        setdiddata(getdid);
-        if (getdid.length === 3) {
-          const [isSuccessful, errorCode, dataHash] = getdid;
-          dispatch(setDIDInfo(isSuccessful, errorCode, dataHash));
-        }
-      }
-    }
-    initialize();
-  }, []);
-  const formatNumber = (num) => {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "k";
-    }
-    return num.toString();
-  };
+  const { address, didData, balance } = useEthereum();
+  console.log("add", address);
+  console.log("did", didData);
+  console.log("balance", balance);
 
-  const animateValue = (start, end, duration, setter) => {
-    let current = start;
-    let range = end - start;
-    let increment = end > start ? 1 : -1;
-    let stepTime = Math.abs(Math.floor(duration / range));
-
-    let timer = setInterval(() => {
-      current += increment;
-      setter(formatNumber(current));
-      if (current === end) {
-        clearInterval(timer);
-      }
-    }, stepTime);
-  };
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
@@ -139,70 +103,6 @@ export default function Home({ onSearch }: SearchProps) {
 
     typeTerm();
   }, []);
-
-  // useEffect(() => {
-  //   async function initialize() {
-  //     if (typeof window.ethereum !== undefined) {
-  //       const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //       const signer = provider.getSigner();
-  //       const address = await signer.getAddress();
-
-  //       const balance = await CheckTokenBalance(address);
-  //       setbalance(balance);
-  //       setAddress(address);
-  //     }
-  //   }
-  //   initialize();
-  // }, []);
-
-  useEffect(() => {
-    async function initialize() {
-      if (typeof window.ethereum !== undefined) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setAddress(address);
-      }
-    }
-    initialize();
-  });
-
-  // useEffect(() => {
-  //   const res = getUser(address);
-  // }, [address]);
-
-  const getUser = async (address: any) => {
-    const postData = {
-      address: address,
-    };
-    const response = await fetch("https://gigshub-v1.vercel.app/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(postData),
-    });
-    if (response.ok) {
-      const responseData = await response.json();
-      const temp = ethers.utils.toUtf8String(responseData.did);
-      setDid(temp);
-      const token = responseData?.token;
-      dispatch(setToken({ token }));
-      try {
-        const response = await fetch(
-          `https://gigshub-v1.vercel.app/api/get-resume/${responseData.did}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.ok) {
-          setResumeHave(true);
-          router.push("/Home");
-        }
-      } catch (error) {}
-    }
-  };
 
   const toggleVisibility = (index) => {
     setVisible((prevState) => ({
@@ -264,7 +164,11 @@ export default function Home({ onSearch }: SearchProps) {
   ];
   const handleSearchSubmit = () => {
     console.log("Searching for:", searchTerm);
-    router.push("/Signup");
+    if (didData == "") {
+      router.push("/Signup");
+    } else {
+      router.push("/Dashboard");
+    }
   };
   const reviews = [
     {
@@ -320,29 +224,6 @@ export default function Home({ onSearch }: SearchProps) {
 
   const maxIndex = reviews.length - 4;
 
-  const slideRight = () => {
-    setCurrentIndex((prevIndex) => {
-      const nextIndex = prevIndex + 1;
-      return nextIndex > maxIndex ? 0 : nextIndex;
-    });
-  };
-
-  const slideLeft = () => {
-    setCurrentIndex((prevIndex) => {
-      const nextIndex = prevIndex - 1;
-      return nextIndex < 0 ? maxIndex : nextIndex;
-    });
-  };
-
-  const visibleReviews = (() => {
-    let itemsToShow = reviews.slice(currentIndex, currentIndex + 4);
-    if (itemsToShow.length < 4) {
-      itemsToShow = itemsToShow.concat(
-        reviews.slice(0, 4 - itemsToShow.length)
-      );
-    }
-    return itemsToShow;
-  })();
   const jobRoles = [
     "BACKEND DEVELOPER",
     "APP DEVELOPER",

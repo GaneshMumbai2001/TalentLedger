@@ -47,7 +47,6 @@ import { Graph } from "react-github-activity-calendar";
 import LanguagePercentageDisplay from "../Components/LanguagePercentageDisplay";
 import RepoDetails from "../Components/RepoDetails";
 import Particle from "@/app/Components/Particles";
-import { CheckTokenBalance } from "@/config/BlockchainServices";
 
 function Page() {
   const [did, setDid] = useState("");

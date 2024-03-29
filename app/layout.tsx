@@ -5,7 +5,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 import { store, persistor } from "../store/store";
 import { Providers } from "@/store/provider";
-
+import { EthereumProvider } from "./Components/DataContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -24,7 +24,10 @@ export default function RootLayout({
         <link rel="icon" href="../assets/Logo.ico" />
       </head>
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          {" "}
+          <EthereumProvider>{children} </EthereumProvider>
+        </Providers>
       </body>
     </html>
   );

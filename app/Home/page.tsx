@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setToken } from "@/store/auth/authSlice";
 import Navbar from "../Components/Navbar";
-import { CheckTokenBalance } from "@/config/BlockchainServices";
 
 function Page() {
   const [address, setAddress] = useState("");
@@ -21,62 +20,7 @@ function Page() {
   const [persona, setPersona] = useState<string>();
   const [resumeHave, setResumeHave] = useState(false);
   const [balance, setBalance] = useState("");
-  useEffect(() => {
-    const res = getUser(address);
-  }, [address]);
-  const getUser = async (address: any) => {
-    const postData = {
-      address: address,
-    };
-    const balance = await CheckTokenBalance({ address: address });
-    if (balance) {
-      const balanceInNo = ethers.utils.formatEther(balance._hex);
-      setBalance(balanceInNo);
-    }
 
-    const response = await fetch("https://gigshub-v1.vercel.app/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(postData),
-    });
-    if (response.ok) {
-      const responseData = await response.json();
-      const temp = ethers.utils.toUtf8String(responseData.did);
-      const personatype = responseData.persona;
-      setPersona(personatype);
-      setDid(temp);
-      const token = responseData?.token;
-      dispatch(setToken({ token }));
-
-      try {
-        const response = await fetch(
-          `https://gigshub-v1.vercel.app/api/get-resume/${responseData.did}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.ok) {
-          setResumeHave(true);
-        } else {
-          router.push("/");
-        }
-      } catch (error) {}
-    }
-  };
-  useEffect(() => {
-    async function initialize() {
-      if (typeof window.ethereum !== undefined) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setAddress(address);
-      }
-    }
-    initialize();
-  });
   return (
     <div className="bg-black bg-[url('../assets/linebar.png')] bg-cover   bg-no-repeat min-h-screen">
       <Navbar did={did} persona={persona} balance={balance} />
