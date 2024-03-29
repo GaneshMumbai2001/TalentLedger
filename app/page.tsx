@@ -94,7 +94,7 @@ export default function Home({ onSearch }: SearchProps) {
       "Need expert Blockchain devs?..",
       "Dreaming of a unique website?..",
       "Explore cutting-edge tech with us...",
-      "Join Gigshub. Elevate your project...",
+      "Join TalentLedger. Elevate your project...",
     ];
     let currentTermIndex = 0;
     let letterIndex = 0;
@@ -231,6 +231,11 @@ export default function Home({ onSearch }: SearchProps) {
     },
     {
       question: "How can I apply for a job using tokens?",
+      answer:
+        "You can sign up on the GIGS platform by creating an account and then start exploring job opportunities.",
+    },
+    {
+      question: "How can I post a job listing on the platform?",
       answer:
         "You can sign up on the GIGS platform by creating an account and then start exploring job opportunities.",
     },
