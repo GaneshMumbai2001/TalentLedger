@@ -10,6 +10,7 @@ import Link from "next/link";
 import { ethers } from "ethers";
 
 import { getDIDInfos } from "@/config/BlockchainServices";
+import { useEthereum } from "../Components/DataContext";
 
 interface DeveloperData {
   title: string;
@@ -67,24 +68,10 @@ const Dashboard: React.FC = () => {
     dev.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const [address, setAddress] = useState<string>();
-  const [diddata, setdiddata] = useState<string>();
-
-  useEffect(() => {
-    async function initialize() {
-      if (typeof window.ethereum !== undefined) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        setAddress(address);
-        const getdid = await getDIDInfos(address);
-        console.log("get", getdid);
-        setdiddata(getdid);
-      }
-    }
-    initialize();
-  });
-
+  const { address, didData, balance, ipfsData, userrole, getusers } =
+    useEthereum();
+  console.log("address", address);
+  console.log("getalldidinfo", getusers);
   return (
     <div className="pb-10">
       <ProtectedNavbar onSearch={setSearchTerm} />

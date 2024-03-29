@@ -1,12 +1,17 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { balanceOf, getDIDInfos } from "@/config/BlockchainServices";
+import {
+  balanceOf,
+  getAllDIDInfo,
+  getDIDInfos,
+} from "@/config/BlockchainServices";
 
 const EthereumContext = createContext();
 
 export const EthereumProvider = ({ children }) => {
   const [address, setAddress] = useState("");
+  const [getusers, setGetusers] = useState([]);
   const [didData, setDidData] = useState("");
   const [userrole, setUserrole] = useState("");
   const [ipfsData, setIpfsData] = useState({});
@@ -29,7 +34,8 @@ export const EthereumProvider = ({ children }) => {
           } else {
             setUserrole("Provider");
           }
-
+          const users = await getAllDIDInfo();
+          setGetusers(users);
           const balance = await provider.getBalance(address);
           const balanceInEther = ethers.utils.formatEther(balance);
           setBalance(balanceInEther);
@@ -57,7 +63,7 @@ export const EthereumProvider = ({ children }) => {
 
   return (
     <EthereumContext.Provider
-      value={{ address, didData, balance, ipfsData, userrole }}
+      value={{ address, didData, balance, ipfsData, userrole, getusers }}
     >
       {children}
     </EthereumContext.Provider>

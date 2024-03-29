@@ -8,7 +8,7 @@ if (ethereum) {
   isBrowser().web3 = new Web3(ethereum);
   isBrowser().web3 = new Web3(isBrowser().web3.currentProvider);
 }
-const gigidadd = "0x9618D1c5f4A80947Ac7dA394cF2aC56aB2920FA9";
+const gigidadd = "0x060cCc567a6533CAfF0854618BD1F1a5c174AcE2";
 
 export const createdid = async ({ address, role, ipfsHash }) => {
   if (!window.ethereum) {
@@ -102,7 +102,7 @@ export const balanceOf = async (address) => {
   }
 };
 
-export const getAllControllers = async () => {
+export const getAllDIDInfo = async () => {
   if (!window.ethereum) {
     throw new Error("Ethereum object not found, install MetaMask.");
   }
@@ -110,10 +110,8 @@ export const getAllControllers = async () => {
   const signer = provider.getSigner();
   console.log("Address requested:", address);
   const contract = new ethers.Contract(gigidadd, Token, signer);
-
   try {
-    const didInfo = await contract.getAllControllers();
-    console.log("DID Info:", didInfo);
+    const didInfo = await contract.getAllDIDInfo();
     return didInfo;
   } catch (error) {
     console.error("Error fetching DID info:", error);
