@@ -13,6 +13,7 @@ import { BsShare } from "react-icons/bs";
 import Link from "next/link";
 import { MdEdit } from "react-icons/md";
 import Modal from "../Components/EditProfileModel/Model";
+import { useEthereum } from "../Components/DataContext";
 
 const categories = [
   "Logo Design",
@@ -52,7 +53,12 @@ const gigData = {
 function page() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const shareURL = `https://gigshub.xyz/${gigData.name}`;
-
+  const { address, didData, balance, ipfsData, userrole } = useEthereum();
+  console.log("add", address);
+  console.log("did", didData);
+  console.log("balance", balance);
+  console.log("ipfsData", ipfsData);
+  console.log("userrole", userrole);
   const handleShareClick = async () => {
     try {
       if (navigator.share) {
@@ -104,15 +110,19 @@ function page() {
         <div className="flex justify-center mt-8">
           <div className="bg-[#B8F6FF] w-[320px] rounded-3xl">
             <div className="flex justify-center pt-8 pb-4 items-center">
-              <Image src={gigData.image} alt="home" className="h-24 w-auto" />
+              <img
+                src={ipfsData?.profileImage ?? gigData.image}
+                alt="home"
+                className="h-24 rounded-full w-auto"
+              />
               <Image
                 src={ellipse}
                 alt="home"
                 className="h-28 lg:h-[110px] ml-8 absolute w-auto"
               />
             </div>
-            <p className="text-lg text-center font-bold">{gigData.name}</p>
-            <p className="text-center">{gigData.role}</p>
+            <p className="text-lg text-center font-bold">{ipfsData?.name}</p>
+            <p className="text-center">{ipfsData?.designation}</p>
             <div
               onClick={handleShareClick}
               className="flex justify-center cursor-pointer hover:bg-black hover:text-white items-center space-x-2 border-2 text-sm border-[#141413] rounded-md mx-[95px] py-1 my-2"
@@ -122,27 +132,32 @@ function page() {
             </div>
 
             <p className="w-80 text-sm font-medium py-2 text-center px-5">
-              {gigData.description}
+              {ipfsData?.description}
             </p>
-            <p className="bg-black text-white  px-3 py-1 text-center rounded-lg text-sm mx-16">
-              {gigData.email}
+            <p className="bg-black text-white  px-3 py-1 text-center rounded-lg text-sm mx-8">
+              {ipfsData?.email}
             </p>
-            <div className="flex justify-center space-x-3 mt-3 ">
-              <Link href={dribble}>
-                {" "}
-                <Image className="h-5 w-auto" src={dribble} alt="" />
-              </Link>
-              <Link href={linkedin}>
-                <Image className="h-5 w-auto" src={linkedin} alt="" />
-              </Link>
-              <Link href={github}>
-                <Image className="h-5 w-auto" src={github} alt="" />
-              </Link>
-              <Link href={dev}>
-                <Image className="h-5 w-auto" src={dev} alt="" />
-              </Link>
-            </div>
-
+            {ipfsData?.links?.length > 0 ? (
+              ipfsData.links.map((link) => (
+                <div className="flex justify-center space-x-3 mt-3 ">
+                  <Link href={link.behance}>
+                    {" "}
+                    <Image className="h-5 w-auto" src={dribble} alt="" />
+                  </Link>
+                  <Link href={link.linkedin}>
+                    <Image className="h-5 w-auto" src={linkedin} alt="" />
+                  </Link>
+                  <Link href={link.github}>
+                    <Image className="h-5 w-auto" src={github} alt="" />
+                  </Link>
+                  <Link href={link.portfolio}>
+                    <Image className="h-5 w-auto" src={dev} alt="" />
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <></>
+            )}
             <Image src={below} className="w-full" alt="" />
           </div>
         </div>
