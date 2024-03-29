@@ -26,6 +26,7 @@ import forfreelancer from "../assets/forfreelancer.svg";
 import forproviders from "../assets/forproviders.svg";
 import question from "../assets/question.svg";
 import solution from "../assets/solution.svg";
+import candidstar from "../assets/candidstar.svg";
 import hero2 from "../assets/hero2.svg";
 import herotick from "../assets/herotick.svg";
 import next from "../assets/next.svg";
@@ -453,7 +454,9 @@ export default function Home({ onSearch }: SearchProps) {
           </div>
         </div>
         <div className="text-center pt-14">
-          <p className="text-5xl font-semibold font-serif">Sound like you?</p>
+          <p className="text-5xl font-semibold font-serif">
+            Sound like <span className="text-[#009DB5]">you?</span>
+          </p>
           <div className="flex justify-center space-x-8 mt-8">
             <p className="text-2xl font-medium font-sans">
               <span className="text-[#A0A3AB]">1.</span> Tokenized Postings
@@ -507,9 +510,15 @@ export default function Home({ onSearch }: SearchProps) {
           </div>
         </div>
         <div>
-          <p className="text-3xl font-bold text-center my-5">
+          <p className="text-3xl font-bold flex flex-col text-center my-5">
             We Have Only <br />
-            Best<span className="text-[#009DB5]"> Candidates</span>
+            <span className=" flex  mx-auto">
+              {" "}
+              <p>
+                Best <span className="text-[#009DB5]">Candidates</span>
+              </p>{" "}
+              <Image src={candidstar} alt="" />
+            </span>
           </p>
           <div className="my-8">
             <div className="relative overflow-hidden marquee">
