@@ -54,55 +54,312 @@ const verifyToken = (req, res, next) => {
 // POST endpoint for posting a gig
 router.post("/post-gig", verifyTokenOfProvider, async (req, res) => {
   try {
-    const { title, description, budget, timeline, tasks, payments } = req.body;
-    console.log(title, description, budget, timeline, tasks, payments);
-    const userId = req.userId;
-    const user = await User.findById(req.userId);
-    const did = user.did;
-    // Create a new gig
-    const newGig = new Gig({
+    const {
       title,
       description,
       budget,
       timeline,
       tasks,
       payments,
+      skills,
+      escrowId,
+    } = req.body;
+    console.log(
+      title,
+      description,
+      budget,
+      timeline,
+      tasks,
+      payments,
+      skills,
+      escrowId
+    );
+    const userId = req.userId;
+    const user = await User.findById(req.userId);
+    console.log("user", user);
+    const did = user._id;
+    const address = user.address;
+
+    let combinedTasks = tasks.map((description, index) => ({
+      description: description,
+      completed: false, // Assuming tasks are initially incomplete
+      payment: {
+        amount: payments[index] || 0, // Use the payment amount from the paymentAmounts array or default to 0
+        paymentStatus: false, // Assuming payment has not been made initially
+        paymentDetails: "", // Assuming no details initially; adjust as needed
+      },
+    }));
+
+    // Create a new gig
+    const newGig = new Gig({
+      title,
+      description,
+      budget,
+      timeline,
+      tasks: combinedTasks,
+
       didOfPosted: did,
       createdBy: userId,
       selectedCandidate: null,
+      skillsRequired: skills,
+      escrowId: escrowId,
+      providerAddress: address,
     });
     await newGig.save();
+
+    console.log("new gig", newGig);
     res.status(201).json({ message: "Gig posted successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+router.get("/appliedGigs", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    console.log("user", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
 
-router.get("/check-application/:gigId", verifyToken, async (req, res) => {
+    console.log("userid", userDid);
+
+    // Find all gigs where the user's DID is in the applicants array
+    const appliedGigs = await Gig.find({
+      applicants: userDid,
+      completed: false,
+      selectedCandidate: null,
+      dropped: false,
+    });
+
+    console.log("applied gigs,", appliedGigs);
+
+    if (appliedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(appliedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/PostedGigs", verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const gigId = req.params.gigId;
-    const userDid = user.did;
+    const userDid = user._id;
+
+    // Find all gigs where the user's DID is in the applicants array
+    const appliedGigs = await Gig.find({
+      createdBy: userDid,
+      completed: false,
+      selectedCandidate: null,
+      dropped: false,
+    });
+
+    if (appliedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(appliedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/PostedOnGoingGigs", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
+
+    // Find all gigs where the user's DID is in the applicants array
+    const appliedGigs = await Gig.find({
+      createdBy: userDid,
+      completed: false,
+      selectedCandidate: { $ne: null },
+      dropped: false,
+    });
+
+    if (appliedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(appliedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/PostedOnCancelledGigs", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
+
+    // Find all gigs where the user's DID is in the applicants array
+    const appliedGigs = await Gig.find({ createdBy: userDid, dropped: true });
+
+    if (appliedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(appliedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/PostedOnCompletedGigs", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
+
+    // Find all gigs where the user's DID is in the applicants array
+    const appliedGigs = await Gig.find({
+      createdBy: userDid,
+      completed: true,
+      selectedCandidate: { $ne: null },
+      dropped: false,
+    });
+
+    if (appliedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(appliedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/selectedGigs", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
+
+    // Find all gigs where the user's DID is in the applicants array
+    const selectedGigs = await Gig.find({
+      selectedCandidate: userDid,
+      withdrawal: false,
+      completed: false,
+    });
+
+    if (selectedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(selectedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/completedGigs", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
+
+    // Find all gigs where the user's DID is in the applicants array
+    const selectedGigs = await Gig.find({
+      selectedCandidate: userDid,
+      withdrawal: false,
+      completed: true,
+    });
+
+    if (selectedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(selectedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/CancelledGigs", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
+
+    // Find all gigs where the user's DID is in the applicants array
+    const selectedGigs = await Gig.find({
+      selectedCandidate: userDid,
+      withdrawal: true,
+      completed: false,
+    });
+
+    if (selectedGigs.length === 0) {
+      return res.status(404).json({ message: "No applied gigs found" });
+    }
+
+    // Return the gigs for which the user has applied
+    return res.status(200).json(selectedGigs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.get("/gigApplicants", verifyToken, async (req, res) => {
+  try {
+    // console.log(req);
+    const gigId = req.query.gigId; // Adjusted to use query parameter
+    console.log("Gig ID: ", gigId);
     const gig = await Gig.findById(gigId);
     if (!gig) {
-      return res.status(404).json({ message: "Gig not found" });
+      return res.status(404).json({ message: "User not found" });
     }
-    const hasApplied = gig.applicants.includes(userDid);
-    if (hasApplied) {
-      return res.status(200).json({
-        message: "User has already applied for this gig",
-        applied: true,
-      });
-    } else {
+    const applicantUserIds = gig.applicants; // Assuming this is an array of userIds
+    console.log("applicantUserIds", applicantUserIds);
+    // Find resumes for all applicants of this gig
+    const applicantResumes = await Resume.find({
+      userId: { $in: applicantUserIds }, // Use $in to select documents where userId matches any in the applicants array
+    });
+
+    console.log("applicantResumes", applicantResumes);
+
+    if (applicantResumes.length === 0) {
       return res
-        .status(200)
-        .json({ message: "User has not applied for this gig", applied: false });
+        .status(404)
+        .json({ message: "No resumes found for applicants" });
     }
+
+    return res.status(200).json(applicantResumes);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -110,12 +367,17 @@ router.get("/check-application/:gigId", verifyToken, async (req, res) => {
 });
 
 // POST endpoint for applying for a gig
-router.post("/apply-for-gig/:gigId", verifyToken, async (req, res) => {
+router.post("/apply-for-gig", verifyToken, async (req, res) => {
   try {
+    const { gigId } = req.body;
+    console.log("Gig ID: ", gigId);
     const userId = req.userId;
+    console.log("User ID: ", userId);
     const user = await User.findById(userId);
-    const gigId = req.params.gigId;
-    const userDid = user.did;
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userDid = user._id;
     // Check if the gig exists
     const gig = await Gig.findById(gigId);
     if (!gig) {
@@ -143,40 +405,189 @@ router.post("/apply-for-gig/:gigId", verifyToken, async (req, res) => {
 });
 
 // POST endpoint for selecting a candidate for a gig
+router.post("/selectApplicant", verifyTokenOfProvider, async (req, res) => {
+  console.log("Selecting candidate");
+  try {
+    const { gigId, applicantId } = req.body; // Or wherever these values are coming from
+
+    const userId = req.userId;
+
+    console.log("User ID: ", applicantId);
+    console.log("Gig ID: ", gigId);
+
+    console.log("applicant Id", applicantId);
+
+    // Check if the user making the request is the gig creator
+    const gig = await Gig.findById(gigId);
+
+    const Applicant = await User.findById(applicantId);
+    console.log("applicant", Applicant);
+
+    console.log("Gig", gig);
+    if (!gig || gig.createdBy._id.toString() !== userId) {
+      console.log("issue in 403");
+      return res.status(403).json({
+        message: "You are not authorized to select a candidate for this gig",
+      });
+    }
+    // Check if the selected candidate is in the gig's applicants list
+    if (!gig.applicants.includes(applicantId)) {
+      return res.status(400).json({
+        message: "The selected candidate is not an applicant for this gig",
+      });
+    }
+    // Update the gig's selectedCandidate field with the selected candidate's ID
+    gig.selectedCandidate = applicantId;
+    await gig.save();
+    res.status(201).json({
+      message: "Candidate selected successfully",
+      userAddress: Applicant.address,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+router.post("/notifyAsComplete", verifyTokenOfProvider, async (req, res) => {
+  console.log("Notifying as complete");
+
+  const { gigId, taskId } = req.body;
+
+  try {
+    const userId = req.userId;
+    console.log("userId", userId);
+    const gig = await Gig.findById(gigId);
+
+    console.log("gig", gig);
+
+    if (!gig) {
+      return res.status(404).send({ message: "Gig not found" });
+    }
+
+    if (gig.selectedCandidate !== userId) {
+      return res
+        .status(403)
+        .send({ message: "User is not the selected candidate for this gig" });
+    }
+
+    const task = gig.tasks.find((task) => task._id.toString() === taskId);
+    console.log("task", task);
+
+    if (!task) {
+      return res.status(404).send({ message: "Task not found" });
+    }
+
+    if (task.completed) {
+      return res
+        .status(400)
+        .send({ message: "Task is already marked as completed" });
+    }
+
+    // Mark the task as completed
+    task.completed = true;
+
+    await gig.save();
+
+    res.status(201).send({ message: "Task marked as completed" });
+  } catch (error) {
+    console.error("Failed to update task status:", error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+});
+router.post("/notifyAsClaimed", verifyTokenOfProvider, async (req, res) => {
+  console.log("Notifying as Claimed");
+
+  const { gigId, taskId } = req.body;
+
+  try {
+    const userId = req.userId;
+    console.log("userId", userId);
+    const gig = await Gig.findById(gigId);
+
+    console.log("gig", gig);
+
+    if (!gig) {
+      return res.status(404).send({ message: "Gig not found" });
+    }
+
+    if (gig.selectedCandidate !== userId) {
+      return res
+        .status(403)
+        .send({ message: "User is not the selected candidate for this gig" });
+    }
+
+    const task = gig.tasks.find((task) => task._id.toString() === taskId);
+    console.log("task", task);
+
+    if (!task) {
+      return res.status(404).send({ message: "Task not found" });
+    }
+
+    if (task.payment.paymentStatus) {
+      return res
+        .status(400)
+        .send({ message: "Task is already marked as completed" });
+    }
+
+    // Mark the task as completed
+    task.payment.paymentStatus = true;
+
+    await gig.save();
+
+    res.status(201).send({ message: "Task marked as completed" });
+  } catch (error) {
+    console.error("Failed to update task status:", error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+});
 router.post(
-  "/select-candidate/:gigId/:candidateId",
+  "/taskUpdateFromProvider",
   verifyTokenOfProvider,
   async (req, res) => {
-    console.log("Selecting candidate");
+    console.log("taskUpdateFromProvider");
+
+    const { gigId, taskId } = req.body;
+
     try {
       const userId = req.userId;
-      const gigId = req.params.gigId;
-      const candidateId = req.params.candidateId;
+      console.log("userId", userId);
+      const gig = await Gig.findById(gigId);
 
-      console.log("User ID: ", userId);
-      console.log("Gig ID: ", gigId);
-      console.log("Candidate ID: ", candidateId);
-      // Check if the user making the request is the gig creator
-      const gig = await Gig.findById(gigId).populate("createdBy");
-      if (!gig || gig.createdBy._id.toString() !== userId) {
+      console.log("gig", gig);
+
+      if (!gig) {
+        return res.status(404).send({ message: "Gig not found" });
+      }
+
+      if (gig.createdBy._id.toString() !== userId) {
         console.log("issue in 403");
         return res.status(403).json({
-          message: "You are not authorized to select a candidate for this gig",
+          message: "You are not the provider who posted this gig",
         });
       }
-      // Check if the selected candidate is in the gig's applicants list
-      if (!gig.applicants.includes(candidateId)) {
-        return res.status(400).json({
-          message: "The selected candidate is not an applicant for this gig",
-        });
+
+      const task = gig.tasks.find((task) => task._id.toString() === taskId);
+      console.log("task", task);
+
+      if (!task) {
+        return res.status(404).send({ message: "Task not found" });
       }
-      // Update the gig's selectedCandidate field with the selected candidate's ID
-      gig.selectedCandidate = candidateId;
+
+      if (task.payment.paymentDetails !== "") {
+        return res
+          .status(400)
+          .send({ message: "Payment detail is already updated" });
+      }
+
+      // Mark the task as completed
+      task.payment.paymentDetails = "Allow";
+
       await gig.save();
-      res.status(201).json({ message: "Candidate selected successfully" });
+
+      res.status(201).send({ message: "Task marked as completed" });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Internal Server Error" });
+      console.error("Failed to update task status:", error);
+      res.status(500).send({ message: "Internal server error" });
     }
   }
 );
@@ -282,34 +693,12 @@ router.get("/all-gigs", verifyToken, async (req, res) => {
     // Find all gigs in the database
     const allGigs = await Gig.find();
 
-    res.json({ gigs: allGigs });
+    res.status(200).json({ gigs: allGigs });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
-// router.get("/get-gigs", verifyToken, async (req, res) => {
-//   try {
-//     // Get the postedByDid parameter from the query string
-//     const { postedByDid } = req.query;
-
-//     // If postedByDid is not provided, return a 400 Bad Request response
-//     if (!postedByDid) {
-//       return res
-//         .status(400)
-//         .json({ message: "postedByDid parameter is required" });
-//     }
-
-//     // Find gigs that have didOfPosted equal to the provided postedByDid
-//     const filteredGigs = await Gig.find({ didOfPosted: postedByDid });
-
-//     res.json({ gigs: filteredGigs });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
 
 router.get(
   "/gigs-with-applicant/:applicantId",

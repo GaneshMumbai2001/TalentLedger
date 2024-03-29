@@ -209,21 +209,134 @@ const verifyTokenAndGetUserId = (req, res, next) => {
   );
 };
 
-router.get("/get-resume/:did", async (req, res) => {
+router.get("/getProfile", verifyToken, async (req, res) => {
   try {
-    const did = req.params.did;
-
     // Find the resume based on the user's DID
-    const resume = await Resume.findOne({ did });
+    const id = req.userId;
+    console.log(id);
+    const resume = await Resume.findOne({ userId: id });
+
+    console.log(resume);
 
     if (!resume) {
       return res
         .status(404)
         .json({ message: "Resume not found for this user" });
     }
-
+    console.log(resume);
     // Return the user's resume data
     res.json({ resume });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.post("/updateProfile", verifyToken, async (req, res) => {
+  const {
+    name,
+    lastName,
+    email,
+    bio,
+    designation,
+    profileImage,
+    experience,
+    education,
+    skills,
+    achievements,
+    links,
+  } = req.body;
+  console.log({
+    name,
+    lastName,
+    email,
+    bio,
+    designation,
+    profileImage,
+    experience,
+    education,
+    skills,
+    achievements,
+    links,
+  });
+
+  try {
+    // Assuming userId is available in req.user
+    const userId = req.userId;
+
+    const updateFields = {};
+
+    // Add non-links fields to updateFields if they are provided
+    if (name) updateFields.name = name;
+    if (lastName) updateFields.lastName = lastName;
+    if (email) updateFields.email = email;
+    if (bio) updateFields.bio = bio;
+    if (designation) updateFields.designation = designation;
+    if (profileImage) updateFields.profileImage = profileImage;
+    if (experience) updateFields.experience = experience;
+    if (education) updateFields.education = education;
+    if (skills) updateFields.skills = skills;
+    if (achievements) updateFields.achievements = achievements;
+
+    // Prepare links update separately to ensure only provided links are updated
+    if (links) {
+      const existingResume = await Resume.findOne({ userId: userId });
+
+      if (!existingResume) {
+        return res.status(404).json({ message: "Resume not found" });
+      }
+      const existingLinks = existingResume.links.toObject();
+      const updatedLinks = {};
+
+      // Example for 'twitter'
+      updatedLinks.twitter =
+        links.twitter !== undefined &&
+        links.twitter !== null &&
+        links.twitter !== ""
+          ? links.twitter
+          : existingLinks.twitter;
+      updatedLinks.linkedin =
+        links.linkedin !== undefined &&
+        links.linkedin !== null &&
+        links.linkedin !== ""
+          ? links.linkedin
+          : existingLinks.linkedin;
+      updatedLinks.behance =
+        links.behance !== undefined &&
+        links.behance !== null &&
+        links.behance !== ""
+          ? links.behance
+          : existingLinks.behance;
+      updatedLinks.blog =
+        links.blog !== undefined && links.blog !== null && links.blog !== ""
+          ? links.blog
+          : existingLinks.blog;
+      updatedLinks.github =
+        links.github !== undefined &&
+        links.github !== null &&
+        links.github !== ""
+          ? links.github
+          : existingLinks.github;
+
+      updateFields.links = updatedLinks;
+    }
+
+    console.log("upfsre", updateFields);
+
+    const updatedResume = await Resume.findOneAndUpdate(
+      { userId: userId },
+      { $set: updateFields },
+      { new: true }
+    );
+    console.log("updatedResume", updatedResume);
+
+    if (!updatedResume) {
+      return res.status(404).json({ message: "Resume not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", resume: updatedResume });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

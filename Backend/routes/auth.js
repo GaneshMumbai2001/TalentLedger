@@ -10,6 +10,26 @@ const abi = require("../helpers/abi.json");
 
 const tokenAbi = require("../helpers/token.json");
 
+const verifyToken = (req, res, next) => {
+  console.log("Token verification");
+  const tokenHeader = req.headers["authorization"];
+  if (!tokenHeader || !tokenHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const token = tokenHeader.split(" ")[1];
+  jwt.verify(
+    token,
+    "048af2438891a89a3536ac09cc96ccbd34a1714e88cf8fdb63e6186dcc3ff89d",
+    (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+      req.userId = decoded.userId;
+      next();
+    }
+  );
+};
+
 async function transferTokensInBackground(wallet, address, amount) {
   const tokenContract = new ethers.Contract("", tokenAbi, wallet);
   try {
@@ -69,28 +89,195 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/signup", async (req, res) => {
+  const {
+    address,
+    name,
+    lastName,
+    email,
+    designation,
+    bio,
+    profileImage,
+    skills,
+    achievements,
+    workExperience,
+    projects,
+    links,
+    signature,
+    type,
+  } = req.body;
+  console.log(
+    address,
+    name,
+    lastName,
+    email,
+    designation,
+    bio,
+    profileImage,
+    skills,
+    achievements,
+    workExperience,
+    projects,
+    links,
+    signature,
+    type
+  );
+
+  try {
+    const existingUser = await User.findOne({ address });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already registered" });
+    }
+    const newUser = await User.create({
+      signature: signature,
+      persona: type,
+      address: address,
+      name: name,
+      lastName: lastName,
+      did: name,
+    });
+
+    const newUserResume = await Resume.create({
+      userId: newUser._id,
+      title: designation,
+
+      workExperiences: workExperience,
+      academicProjects: projects,
+      links: links,
+      name: name,
+      lastName: lastName,
+      email: email,
+      bio: bio,
+      skills: skills,
+      achievements: achievements,
+    });
+
+    const token = jwt.sign(
+      { userId: newUser._id, name: name },
+      "048af2438891a89a3536ac09cc96ccbd34a1714e88cf8fdb63e6186dcc3ff89d",
+      { expiresIn: "24h" }
+    );
+    res.status(200).json({ message: "Registration successful!", token });
+  } catch (error) {
+    console.error(error);
+  }
+});
+router.post("/onboardProvider", async (req, res) => {
+  const {
+    address,
+    name,
+    lastName,
+    email,
+    twitter,
+    discord,
+    signature,
+    type,
+    message,
+    v,
+    r,
+    s,
+  } = req.body;
+  console.log(
+    address,
+    name,
+    lastName,
+    email,
+    twitter,
+    discord,
+    signature,
+    type,
+    message,
+    v,
+    r,
+    s
+  );
+
+  try {
+    const existingUser = await User.findOne({ address });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already registered" });
+    }
+
+    const did = name + lastName;
+    const newUser = await User.create({
+      signature: signature,
+      persona: type,
+      address: address,
+      name: name,
+      lastName: lastName,
+      did: did,
+    });
+
+    const newProvider = await Provider.create({
+      userId: newUser._id,
+      email: email,
+      twitter,
+      discord,
+    });
+
+    console.log("provider created", newProvider);
+
+    const token = jwt.sign(
+      { userId: newUser._id, name: name },
+      "048af2438891a89a3536ac09cc96ccbd34a1714e88cf8fdb63e6186dcc3ff89d",
+      { expiresIn: "24h" }
+    );
+    res.status(200).json({ message: "Registration successful!", token });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 router.post("/login", async (req, res) => {
   try {
     const { address } = req.body;
     const user = await User.findOne({ address });
 
+    console.log(address);
+
+    console.log("user", user);
+
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(403).json({ message: "User not found" });
     }
 
     const token = jwt.sign(
-      { userId: user._id, did: user.did },
+      { userId: user._id },
       "048af2438891a89a3536ac09cc96ccbd34a1714e88cf8fdb63e6186dcc3ff89d",
       {
         expiresIn: "24h",
       }
     );
 
-    const did = user.did;
+    const name = user.name;
+    const lastName = user.lastName;
 
     const type = user.persona;
 
-    res.json({ token: token, did: did, persona: type });
+    res.status(200).json({
+      token: token,
+      name: name,
+      lastName: lastName,
+      persona: type,
+      userId: user._id,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.post("/getUser", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(403).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      userId: userId,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -98,7 +285,7 @@ router.post("/login", async (req, res) => {
 });
 
 const octokit = new Octokit({
-  auth: "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",
+  auth: "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",
 });
 
 router.get("/repo/:owner/:repo", async (req, res) => {

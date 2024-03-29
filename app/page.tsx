@@ -8,6 +8,7 @@ import review1 from "../assets/review1.svg";
 import review2 from "../assets/review2.svg";
 import review3 from "../assets/review3.svg";
 import review4 from "../assets/review4.svg";
+import roundtick from "../assets/roundtick.svg";
 import review1_logo from "../assets/review_logo1.svg";
 import review2_logo from "../assets/review_logo2.svg";
 import review3_logo from "../assets/review_logo3.svg";
@@ -16,11 +17,14 @@ import walleticon1 from "../assets/walleticon1.svg";
 import walleticon2 from "../assets/walleticon2.svg";
 import walleticon3 from "../assets/walleticon3.svg";
 import experienced from "../assets/experienced.svg";
+import ministar from "../assets/ministar.svg";
 import collection from "../assets/collection.svg";
 import forfreelancer from "../assets/forfreelancer.svg";
 import forproviders from "../assets/forproviders.svg";
 import hero2 from "../assets/hero2.svg";
 import herotick from "../assets/herotick.svg";
+import next from "../assets/next.svg";
+import next2 from "../assets/next2.svg";
 import collectionstar from "../assets/collectionstar.svg";
 import Head from "next/head";
 import Link from "next/link";
@@ -40,7 +44,7 @@ import {
 import ProctedNav from "./Components/ProctedNav";
 import { MdArrowOutward } from "react-icons/md";
 import { DisableSSR } from "@/utils/disable-ssr";
-import logo from "../assets/logo4.svg";
+import logo from "../assets/croplogo.svg";
 import { FaXTwitter } from "react-icons/fa6";
 
 interface SearchProps {
@@ -342,27 +346,30 @@ export default function Home({ onSearch }: SearchProps) {
     <DisableSSR>
       <main className="bg-[#ffffff] ">
         <Head>
-          <Link shallow rel="icon" href="../assets/Logo.ico" />
+          <Link shallow rel="icon" href="../assets/croplogo.svg" />
         </Head>
-        <div className="bg-[#FBF4EE]  bg-cover bg-no-repeat  pb-24">
+        <div className="bg-[#C9F8FF]  bg-cover bg-no-repeat  pb-24">
           <ProctedNav />
-          <div className="flex  pt-8 md:pt-14 justify-between px-20">
+          <div className="flex  pt-8 md:pt-14 justify-center px-20">
             <div className="">
-              <div className="flex space-x-3 items-center justify-start">
-                <p className="text-5xl font-mono px-7 rounded-lg py-2 font-extrabold bg-[#FFCE4C]">
-                  Explore
-                </p>
-                <p className="text-5xl bg-[#00CBA0]  px-2 py-2 rounded-full">
-                  <MdArrowOutward />
-                </p>
-                <Image src={roundlap} className="h-16 w-auto" alt="" />
-              </div>
-              <div className="mt-3 ">
-                <div className="flex justify-start">
-                  <p className="text-5xl font-mono px-7  rounded-lg py-2 font-extrabold bg-[#00CBA0]">
-                    Tokenize Progress
+              <div className="flex">
+                <Image src={ministar} className="pt-8" alt="" />
+                <div className="text-center">
+                  <p className="text-5xl font-serif px-7 rounded-lg py-2  font-semibold ">
+                    Seamless Hiring Made Easy
+                  </p>
+                  <p className="text-5xl font-serif text-[#009DB5] font-semibold  px-2 py-2 rounded-full">
+                    Unlock you Potential today
+                  </p>
+                  <p className="pt-3 px-52 text-lg">
+                    Transform hiring with TalentLedger : NLP, ML, and blockchain
+                    unite for <br /> efficiency, transparency, and personalized
+                    engagement. Join us now!
                   </p>
                 </div>
+                <Image src={ministar} alt="" />
+              </div>
+              <div className=" flex ml-24 justify-center ">
                 <div className="text-xl flex space-x-16 items-center relative text-white mt-5">
                   <div className="relative w-[600px]">
                     <FaSearch
@@ -385,7 +392,7 @@ export default function Home({ onSearch }: SearchProps) {
                   />
                 </div>
               </div>
-              <div className="flex mt-5  space-x-4">
+              <div className="flex mt-5 text-center justify-center space-x-4">
                 {suggestedSkills.length > 0 && <label>Popular Skills:</label>}
 
                 <div className="text-sm flex space-x-4">
@@ -400,52 +407,97 @@ export default function Home({ onSearch }: SearchProps) {
                   ))}
                 </div>
               </div>
-              <div>
-                <p className="mt-6 text-[#212529] text-lg w-[620px]">
-                  Explore opportunities, earn tokens, and revolutionize hiring.
-                  Say goodbye to traditional job searches—welcome to the future
-                </p>
-              </div>
-              <div className="flex space-x-14 items-center mt-5 px-5 py-3 bg-white rounded-2xl max-w-md">
-                <div>
-                  <p className="text-lg font-bold mb-3">Trusted Freelancers</p>
-                  <Image src={collection} alt="" />
+              <div className="flex px-32">
+                <Image src={ministar} className="pt-8 rotate-180" alt="" />
+                <div className="flex space-x-14 items-center mx-auto  justify-center mt-12 px-5 py-3 bg-white rounded-2xl max-w-md">
+                  <div>
+                    <p className="text-lg font-bold mb-3">
+                      Trusted Freelancers
+                    </p>
+                    <Image src={collection} alt="" />
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <Image src={collectionstar} alt="" />
+                    <p className="font-semibold text-sm">200+</p>
+                    <p className="text-[#747474] text-md font-light">
+                      Satisfied Customer
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col space-y-1">
-                  <Image src={collectionstar} alt="" />
-                  <p className="font-semibold text-sm">200+</p>
-                  <p className="text-[#747474] text-md font-light">
-                    Satisfied Customer
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex mr-20  -space-x-40">
-              <div className="flex  z-10 -space-x-10">
-                <Image
-                  src={walleticon1}
-                  className="  hover:animate-bounce  -mt-48 z-10"
-                  alt=""
-                />
-                <Image src={herohalf2} className=" mt-20" alt="" />
-                <Image
-                  src={walleticon2}
-                  className=" hover:animate-bounce z-10 mt-[370px]"
-                  alt=""
-                />
-              </div>
-              <div className="flex items-start -space-x-16">
-                <Image
-                  src={walleticon3}
-                  className="z-10 -mt-14  hover:animate-bounce"
-                  alt=""
-                />
-                <Image src={herohalf1} alt="" />
+                <Image src={ministar} className="pt-8 rotate-12" alt="" />
               </div>
             </div>
           </div>
         </div>
-        <div className="my-20 flex xl:flex-row flex-col items-center    justify-center xl:-space-x-44   2xl:-space-x-72">
+        <div className="text-center py-20">
+          <p className="text-5xl font-semibold font-serif">Sound like you?</p>
+          <div className="flex justify-center space-x-8 mt-8">
+            <p className="text-2xl font-medium font-sans">
+              <span className="text-[#A0A3AB]">1.</span> Tokenized Postings
+            </p>
+            <Image src={next} alt="" />
+            <p className="text-2xl font-medium font-sans">
+              <span className="text-[#A0A3AB]">2.</span> Efficient Application
+            </p>
+            <Image src={next2} className="" alt="" />
+            <p className="text-2xl font-medium font-sans">
+              <span className="text-[#A0A3AB]">3.</span> Rewards for Matching
+            </p>
+          </div>
+          <p className="text-sm mt-10">
+            💡 Why settle for outdated hiring practices? Embrace the future with
+            TalentLedger's approach to talent acquisition
+          </p>
+        </div>
+        <div className="text-center flex flex-col space-y-5">
+          <p className="text-4xl font-semibold font-serif">
+            Transform your freelance career with <br /> TalentLedger's
+            blockchain platform.
+          </p>
+          <p className=" text-2xl">
+            TalentLedger integrates NLP, ML, and blockchain to offer a
+            user-friendly platform <br /> for decentralized freelancing, job
+            matching, and secure project management.
+          </p>
+        </div>
+        <div className="flex space-x-3 mt-10 justify-center">
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Decentralized Identity</p>
+          </div>
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Tailored Gigs</p>
+          </div>
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Transparent Transactions</p>
+          </div>
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Community Engagement</p>
+          </div>
+        </div>
+        <div className="flex space-x-3 mt-6 justify-center">
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Secure Platform</p>
+          </div>
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Candidate Dispute</p>
+          </div>
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Streamlined Experience</p>
+          </div>
+          <div className="px-3 flex items-center text-lg space-x-1 py-2 rounded-3xl border-2 border-black">
+            <Image src={roundtick} alt="" />
+            <p>Global Opportunities</p>
+          </div>
+        </div>
+
+        <div className="my-20 mt-28 flex xl:flex-row flex-col items-center    justify-center xl:-space-x-44   2xl:-space-x-72">
           <div className=" flex  w-1/2 flex-row justify-center   relative   ">
             <div className="bg-[#FBE2F4] z-10 px-8 py-5 w-[480px] rounded-xl">
               <p className="text-lg font-bold">For Freelancers</p>
@@ -481,7 +533,7 @@ export default function Home({ onSearch }: SearchProps) {
         <div>
           <p className="text-3xl font-bold text-center my-5">
             We Have Only <br />
-            Best<span className="text-[#FFCE4C]"> Candidates</span>
+            Best<span className="text-[#009DB5]"> Candidates</span>
           </p>
           <div className="my-8">
             <div className="relative overflow-hidden marquee">
@@ -746,7 +798,7 @@ export default function Home({ onSearch }: SearchProps) {
             </div>
           </div>
           <p className="text-center mt-32 pb-3 text-sm">
-            © 2024 All right reserved by Gigshub
+            © 2024 All right reserved by TalentLedger
           </p>
         </div>
       </main>

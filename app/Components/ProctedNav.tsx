@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import logo from "../../assets/logo3.svg";
+import logo from "../../assets/logo.svg";
 import walletpng from "../../assets/wallet.svg";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import profile from "../../assets/profile.svg";

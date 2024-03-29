@@ -9,8 +9,8 @@ import { Providers } from "@/store/provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Gigshub",
-  description: "Gigshub",
+  title: "TaletLedger",
+  description: "Decentralized Gig Hiring platform",
 };
 
 export default function RootLayout({
