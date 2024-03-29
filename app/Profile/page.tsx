@@ -102,7 +102,7 @@ function page() {
       </div>
       <div className="flex justify-center -space-x-5">
         <div className="flex justify-center mt-8">
-          <div className="bg-[#FFCE4C] w-[320px] rounded-3xl">
+          <div className="bg-[#B8F6FF] w-[320px] rounded-3xl">
             <div className="flex justify-center pt-8 pb-4 items-center">
               <Image src={gigData.image} alt="home" className="h-24 w-auto" />
               <Image

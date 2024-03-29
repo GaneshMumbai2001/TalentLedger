@@ -44,6 +44,7 @@ import { RootState } from "@/store/store";
 import ProctedNav from "../Components/ProctedNav";
 import OnboardingNav from "../Components/OnboardingNav";
 import { NewprogressBar } from "../Components/NewprogressBar";
+import { FaPlus } from "react-icons/fa";
 
 function Page() {
   const [name, setName] = useState("");
@@ -194,6 +195,11 @@ function Page() {
 
   const router = useRouter();
   const [skills, setSkills] = useState([]);
+  const [entergig, setEnterGigs] = useState("");
+  const [timeline, settimeline] = useState("");
+  const [pay, setPay] = useState("");
+  const [gigskills, setgigskills] = useState("");
+  const [gigsummary, setsummary] = useState("");
   const [achievements, setAchievements] = useState([]);
   const [newSkill, setNewSkill] = useState("");
   const [newAchievement, setNewAchievement] = useState("");
@@ -374,6 +380,18 @@ which i can simply parse it as json.
       setAchievements([...achievements, newAchievement]);
       setNewAchievement("");
     }
+  };
+  const [suggestedSkills, setSuggestedSkills] = useState([
+    "HTML",
+    "CSS",
+    "Adobe Photoshop",
+    "Angular",
+  ]);
+  const handleAddSkill = (skill: string) => {
+    if (!skills.includes(skill)) {
+      setgigskills(gigskills ? `${gigskills}, ${skill}` : skill);
+    }
+    setSuggestedSkills(suggestedSkills.filter((s) => s !== skill));
   };
 
   const removeSkill = (skillToRemove) => {
@@ -684,7 +702,7 @@ which i can simply parse it as json.
                   <div>
                     <label className="text-[#747474]">Last name *</label>
                     <input
-                      value={did2}
+                      value={providerlastname}
                       onChange={(e) => setproviderlastname(e.target.value)}
                       onKeyDown={handleKeyPress}
                       className="bg-transparent outline-none pl-3 text-black border border-[#DCDCDC] md:w-[250px] w-20 rounded-xl py-2 "
@@ -695,7 +713,7 @@ which i can simply parse it as json.
                   <label className="text-[#747474]">Work email address</label>
                   <br />
                   <input
-                    value={did2}
+                    value={provideremail}
                     onChange={(e) => setprovideremail(e.target.value)}
                     type="email"
                     onKeyDown={handleKeyPress}
@@ -706,7 +724,7 @@ which i can simply parse it as json.
                   <label className="text-[#747474]">Twitter URL</label>
                   <br />
                   <input
-                    value={did2}
+                    value={providertwitter}
                     onChange={(e) => setprovidertwitter(e.target.value)}
                     onKeyDown={handleKeyPress}
                     className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
@@ -716,16 +734,109 @@ which i can simply parse it as json.
                   <label className="text-[#747474]">Discord URL</label>
                   <br />
                   <input
-                    value={did2}
+                    value={providerdiscord}
                     onChange={(e) => setproviderdiscord(e.target.value)}
                     onKeyDown={handleKeyPress}
                     className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
                   />
                 </div>
               </div>
+              <button
+                onClick={() => setStep(step + 1)}
+                className="text-lg md:mt-5 mx-auto px-10 font-semibold py-2 flex items-center rounded-2xl bg-[#009DB5] "
+              >
+                Next <AiOutlineArrowRight className="mt-2 ml-1" />
+              </button>
             </div>
           </>
         )}
+        {selectedRole === "provider" && step === 3 && (
+          <>
+            <div className="  rounded-2xl md:mx-80 mx-7 px-5 md:px-20  ">
+              <div className="flex flex-col  items-center space-y-5 py-6 rounded-lg bg-white justify-center mt-5 ">
+                <div>
+                  <div>
+                    <label className="text-[#747474]">Enter Gigs *</label>
+                    <br />
+                    <input
+                      value={entergig}
+                      onChange={(e) => setEnterGigs(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                      className="bg-transparent outline-none pl-3 text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 "
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[#747474]">
+                    Enter the Timeline (In Months)
+                  </label>
+                  <br />
+                  <input
+                    value={timeline}
+                    onChange={(e) => settimeline(e.target.value)}
+                    type="email"
+                    onKeyDown={handleKeyPress}
+                    className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
+                  />
+                </div>
+                <div>
+                  <label className="text-[#747474]">
+                    How much would you pay*
+                  </label>
+                  <br />
+                  <input
+                    value={pay}
+                    onChange={(e) => setPay(e.target.value)}
+                    type="email"
+                    onKeyDown={handleKeyPress}
+                    className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
+                  />
+                </div>
+                <div>
+                  <label className="text-[#747474]">Skills Required*</label>
+                  <br />
+                  <input
+                    value={gigskills}
+                    onChange={(e) => setprovideremail(e.target.value)}
+                    type="email"
+                    onKeyDown={handleKeyPress}
+                    className="bg-transparent outline-none text-black border border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
+                  />
+                </div>
+                <div className="flex flex-col mt-3">
+                  {suggestedSkills.length > 0 && (
+                    <label className="text-sm font-medium text-[#747474]">
+                      Suggested Skills
+                    </label>
+                  )}
+                  <div className="text-sm mt-3 flex space-x-4">
+                    {suggestedSkills.map((gigskills, index) => (
+                      <p
+                        key={index}
+                        onClick={() => handleAddSkill(gigskills)}
+                        className="bg-[#DCDCDC] cursor-pointer flex space-x-2 px-3 py-1 rounded-full font-semibold items-center"
+                      >
+                        <FaPlus className="text-[#00CBA0]" />
+                        <span> {gigskills} </span>
+                      </p>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[#747474]">Summary</label>
+                  <br />
+                  <input
+                    value={gigsummary}
+                    onChange={(e) => setsummary(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    className="bg-transparent outline-none text-black border h-32 border-[#DCDCDC] md:w-[520px] w-40 rounded-xl py-2 pl-3"
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
         {selectedRole === "Dev" && step === 2 && (
           <>
             <div className=" flex  px-5 mx-2 text-center rounded-lg  md:px-10 md:mx-40 justify-center">
@@ -799,10 +910,9 @@ which i can simply parse it as json.
             </div>
           </>
         )}
-
-        {step === 3 && (
+        {selectedRole === "Dev" && step === 3 && (
           <>
-            <p className="text-center text-white text-2xl md:text-4xl font-bold">
+            <p className="text-center text-black text-2xl md:text-4xl font-bold">
               Let's get started
             </p>
             <p className="text-center md:text-lg font-semibold mt-2">
@@ -828,7 +938,7 @@ which i can simply parse it as json.
                   type="text"
                   placeholder="Enter your Name*"
                   required
-                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                 />
                 <input
                   value={lastName}
@@ -836,7 +946,7 @@ which i can simply parse it as json.
                   type="text"
                   placeholder="Enter your Last Name*"
                   required
-                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                 />
               </div>
               <div className="flex flex-col my-8 md:flex-row space-y-4 md:space-y-0 md:space-x-6 ">
@@ -846,7 +956,7 @@ which i can simply parse it as json.
                   type="email"
                   placeholder="Enter your EmailID*"
                   required
-                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                 />
 
                 <input
@@ -855,7 +965,7 @@ which i can simply parse it as json.
                   type="text"
                   placeholder="Enter your Designation*"
                   required
-                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                 />
               </div>
               <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 mb-8 ">
@@ -865,7 +975,7 @@ which i can simply parse it as json.
                   type="text"
                   placeholder="Tell About Yourself*"
                   required
-                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                  className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                 />
 
                 <input
@@ -878,7 +988,7 @@ which i can simply parse it as json.
 
                 <button
                   onClick={handleButtonClick}
-                  className="border bg-transparent flex justify-center space-x-3 px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                  className="border bg-transparent flex justify-center space-x-3 px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                 >
                   <LuUploadCloud className="text-xl mt-1" /> Upload Profile
                   Image
@@ -890,7 +1000,7 @@ which i can simply parse it as json.
 
         {step === 4 && (
           <>
-            <p className="text-center text-white text-2xl md:text-4xl font-bold">
+            <p className="text-center text-black text-2xl md:text-4xl font-bold">
               Work Experience
             </p>
             {workExperiences?.map((experience, index) => (
@@ -899,7 +1009,7 @@ which i can simply parse it as json.
                 className="flex flex-col pt-8 items-center justify-center"
               >
                 <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Designation</label>
                     <input
                       value={experience.designation}
@@ -913,10 +1023,10 @@ which i can simply parse it as json.
                       type="text"
                       placeholder="Designation"
                       required
-                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                     />
                   </div>
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Start Date</label>
                     <input
                       value={experience.startDate}
@@ -930,10 +1040,10 @@ which i can simply parse it as json.
                       type="date"
                       placeholder="Start Date"
                       required
-                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-black text-black outline-none"
                     />
                   </div>
-                  <div className="flex flex-col  text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col  text-sm text-black font-light space-y-1">
                     <label>End Date</label>
                     <input
                       value={experience.endDate}
@@ -942,12 +1052,12 @@ which i can simply parse it as json.
                       }
                       type="date"
                       placeholder="End Date"
-                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-black text-black outline-none"
                     />
                   </div>
                 </div>
                 <div className="flex flex-col mt-2 space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Organization</label>
                     <input
                       value={experience.organisation}
@@ -961,10 +1071,10 @@ which i can simply parse it as json.
                       type="text"
                       placeholder="Organization"
                       required
-                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                     />
                   </div>
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Description (Optional)</label>
                     <input
                       value={experience.description}
@@ -976,12 +1086,12 @@ which i can simply parse it as json.
                         )
                       }
                       placeholder="Description"
-                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                     />
                   </div>
                 </div>
                 <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Location</label>
                     <input
                       value={experience.location}
@@ -991,14 +1101,14 @@ which i can simply parse it as json.
                       type="text"
                       placeholder="Location"
                       required
-                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                     />
                   </div>
                   {index === workExperiences.length - 1 && (
                     <div className="mt-4 flex space-x-3">
                       <button
                         onClick={addWorkExperience}
-                        className="border choosecard text-sm px-3 md:w-96 rounded-xl mb-5 py-3 md:mt-5 md:mb-2 border-white text-white"
+                        className="border choosecard text-sm px-3 md:w-96 rounded-xl mb-5 py-3 md:mt-5 md:mb-2 border-black text-black"
                       >
                         <span className="flex justify-center space-x-2">
                           <AiOutlinePlus className="mt-1" /> Add Work Experience
@@ -1019,7 +1129,7 @@ which i can simply parse it as json.
                 </div>
               </div>
             ))}
-            <p className="text-center text-white text-2xl md:text-4xl mt-4 font-bold">
+            <p className="text-center text-black text-2xl md:text-4xl mt-4 font-bold">
               Add Academics/ Personal Projects
             </p>
             {academicProjects?.map((project, index) => (
@@ -1028,7 +1138,7 @@ which i can simply parse it as json.
                 className="flex flex-col md:pt-8 items-center justify-center"
               >
                 <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Title</label>
                     <input
                       value={project.title}
@@ -1038,10 +1148,10 @@ which i can simply parse it as json.
                       type="text"
                       placeholder="Title"
                       required
-                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                     />
                   </div>
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Start Month</label>
                     <input
                       value={project.startMonth}
@@ -1051,10 +1161,10 @@ which i can simply parse it as json.
                       type="month"
                       placeholder="Start Month"
                       required
-                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-black text-black outline-none"
                     />
                   </div>
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>End Month</label>
                     <input
                       value={project.endMonth}
@@ -1063,12 +1173,12 @@ which i can simply parse it as json.
                       }
                       type="month"
                       placeholder="End Month"
-                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-40 py-2 border-black text-black outline-none"
                     />
                   </div>
                 </div>
                 <div className="flex flex-col mt-2 space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Description (Optional)</label>
                     <input
                       value={project.description}
@@ -1080,10 +1190,10 @@ which i can simply parse it as json.
                         )
                       }
                       placeholder="Description"
-                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                     />
                   </div>
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Project Link (Optional)</label>
                     <input
                       value={project.projectLink}
@@ -1096,7 +1206,7 @@ which i can simply parse it as json.
                       }
                       type="url"
                       placeholder="Project Link"
-                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                      className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                     />
                   </div>
                 </div>
@@ -1104,7 +1214,7 @@ which i can simply parse it as json.
                 <div className=" flex justify-center">
                   <button
                     onClick={addAcademicProject}
-                    className="border my-5 choosecard text-sm px-3 md:w-96 rounded-xl mb-5 md:mb-2 py-3 border-white text-white"
+                    className="border my-5 choosecard text-sm px-3 md:w-96 rounded-xl mb-5 md:mb-2 py-3 border-black text-black"
                   >
                     <span className="flex justify-center space-x-2">
                       <AiOutlinePlus className="mt-1" /> Add Academic/ Personal
@@ -1129,11 +1239,11 @@ which i can simply parse it as json.
         {step === 5 && (
           <>
             <div className="flex flex-col md:pt-2 items-center justify-center">
-              <p className="text-center text-white text-2xl md:text-4xl font-bold">
+              <p className="text-center text-black text-2xl md:text-4xl font-bold">
                 Skills
               </p>
               <div className="flex justify-center mt-5">
-                <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                <div className="flex flex-col text-sm text-black font-light space-y-1">
                   <label>Add Skills</label>
                   <div className="flex items-center">
                     <input
@@ -1158,7 +1268,7 @@ which i can simply parse it as json.
                 {skills?.map((skill, index) => (
                   <div
                     key={index}
-                    className="flex   skillint text-white px-3 py-1 rounded-full"
+                    className="flex   skillint text-black px-3 py-1 rounded-full"
                   >
                     {skill}
                     <button
@@ -1177,79 +1287,79 @@ which i can simply parse it as json.
                   className="flex flex-col md:pt-8 items-center justify-center"
                 >
                   <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                    <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                    <div className="flex flex-col text-sm text-black font-light space-y-1">
                       <label>Portfolio Link</label>
                       <input
                         value={link.portfolio}
                         onChange={(e) => handleLinks(e, link.id, "portfolio")}
                         type="url"
                         placeholder="www.google.com"
-                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                       />
                     </div>
-                    <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                    <div className="flex flex-col text-sm text-black font-light space-y-1">
                       <label>Twitter Link </label>
                       <input
                         value={link.twitter}
                         onChange={(e) => handleLinks(e, link.id, "twitter")}
                         type="url"
                         placeholder="www.google.com"
-                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                       />
                     </div>
                   </div>
                   <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                    <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                    <div className="flex flex-col text-sm text-black font-light space-y-1">
                       <label>Linkedin Link</label>
                       <input
                         value={link.linkedin}
                         onChange={(e) => handleLinks(e, link.id, "linkedin")}
                         type="url"
                         placeholder="www.google.com"
-                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                       />
                     </div>
-                    <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                    <div className="flex flex-col text-sm text-black font-light space-y-1">
                       <label>Behance Link</label>
                       <input
                         value={link.behance}
                         onChange={(e) => handleLinks(e, link.id, "behance")}
                         type="url"
                         placeholder="www.google.com"
-                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                       />
                     </div>
                   </div>
                   <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:my-2 md:gap-16">
-                    <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                    <div className="flex flex-col text-sm text-black font-light space-y-1">
                       <label>Github Link</label>
                       <input
                         value={link.github}
                         onChange={(e) => handleLinks(e, link.id, "github")}
                         type="url"
                         placeholder="www.google.com"
-                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                       />
                     </div>
-                    <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                    <div className="flex flex-col text-sm text-black font-light space-y-1">
                       <label>Blog Link </label>
                       <input
                         value={link.blog}
                         onChange={(e) => handleLinks(e, link.id, "blog")}
                         type="url"
                         placeholder="www.google.com"
-                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-white text-white outline-none"
+                        className="border bg-transparent px-3 rounded-xl md:w-96 py-2 border-black text-black outline-none"
                       />
                     </div>
                   </div>
                 </div>
               ))}
               <div className="flex flex-col md:pt-8 items-center justify-center">
-                <p className="text-center text-white text-2xl md:text-4xl font-bold">
+                <p className="text-center text-black text-2xl md:text-4xl font-bold">
                   Achievements
                 </p>
                 <div className="flex justify-center mt-5">
-                  <div className="flex flex-col text-sm text-[#FFF] font-light space-y-1">
+                  <div className="flex flex-col text-sm text-black font-light space-y-1">
                     <label>Add Achievements</label>
                     <div className="flex items-center">
                       <input
@@ -1274,7 +1384,7 @@ which i can simply parse it as json.
                   {achievements?.map((ach, index) => (
                     <div
                       key={index}
-                      className="flex  items-center skillint text-white px-3 py-1 rounded-full"
+                      className="flex  items-center skillint text-black px-3 py-1 rounded-full"
                     >
                       {ach}
                       <button
@@ -1326,7 +1436,7 @@ which i can simply parse it as json.
             </button>
           ) : null}
 
-          {step === 2 && selectedRole == "provider" && (
+          {step === 3 && selectedRole == "provider" && (
             <button
               onClick={handleSubmit}
               disabled={isLoading}

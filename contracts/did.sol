@@ -1,25 +1,21 @@
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract DIDRegistry {
-    // Owner of the contract for administrative purposes
     address public owner;
+
+    enum Role { Provider, Developer }
 
     struct DID {
         bool exists;
-        address controller; // The entity that controls this DID
-        string publicKey; // Public key associated with this DID
-        string authentication; // Authentication methods
-        string serviceEndpoints; // Service endpoints
+        Role role;
+        string ipfsHash;
     }
 
-    // Mapping of DID identifiers to their respective data
-    mapping(string => DID) public dids;
+    mapping(address => DID) public dids;
 
-    // Events for logging
-    event DIDRegistered(string indexed didIdentifier, address controller);
-    event DIDUpdated(string indexed didIdentifier, string publicKey, string authentication, string serviceEndpoints);
-    event DIDDeactivated(string indexed didIdentifier);
+    event DIDRegistered(address indexed controller, Role role, string ipfsHash);
+    event DIDUpdated(address indexed controller, Role role, string ipfsHash);
+    event DIDDeactivated(address indexed controller);
 
     constructor() {
         owner = msg.sender;
@@ -30,41 +26,40 @@ contract DIDRegistry {
         _;
     }
 
-    modifier onlyController(string memory didIdentifier) {
-        require(dids[didIdentifier].controller == msg.sender, "Only the DID controller can perform this action.");
+    modifier onlyController(address controller) {
+        require(dids[controller].exists, "Only the DID controller can perform this action.");
         _;
     }
 
-    // Register a new DID
     function registerDID(
-        string memory didIdentifier,
-        string memory publicKey,
-        string memory authentication,
-        string memory serviceEndpoints
+        address controller,
+        Role role,
+        string memory ipfsHash
     ) public {
-        require(!dids[didIdentifier].exists, "DID already exists.");
-        dids[didIdentifier] = DID(true, msg.sender, publicKey, authentication, serviceEndpoints);
-        emit DIDRegistered(didIdentifier, msg.sender);
+        require(!dids[controller].exists, "DID already exists.");
+        dids[controller] = DID(true, role, ipfsHash);
+        emit DIDRegistered(controller, role, ipfsHash);
     }
 
-    // Update an existing DID
     function updateDID(
-        string memory didIdentifier,
-        string memory newPublicKey,
-        string memory newAuthentication,
-        string memory newServiceEndpoints
-    ) public onlyController(didIdentifier) {
-        DID storage did = dids[didIdentifier];
-        require(did.exists, "DID does not exist.");
-        did.publicKey = newPublicKey;
-        did.authentication = newAuthentication;
-        did.serviceEndpoints = newServiceEndpoints;
-        emit DIDUpdated(didIdentifier, newPublicKey, newAuthentication, newServiceEndpoints);
+        address controller,
+        Role newRole,
+        string memory newIpfsHash
+    ) public onlyController(controller) {
+        DID storage did = dids[controller];
+        did.role = newRole;
+        did.ipfsHash = newIpfsHash;
+        emit DIDUpdated(controller, newRole, newIpfsHash);
     }
 
-    // Deactivate a DID
-    function deactivateDID(string memory didIdentifier) public onlyController(didIdentifier) {
-        delete dids[didIdentifier];
-        emit DIDDeactivated(didIdentifier);
-    }
+    function deactivateDID(address controller) public onlyController(controller) {
+        delete dids[controller];
+        emit DIDDeactivated(controller);
+    }
+
+    function getDIDInfo(address controller) public view returns (bool, Role, string memory) {
+        DID storage did = dids[controller];
+        require(did.exists, "DID does not exist.");
+        return (did.exists, did.role, did.ipfsHash);
+    }
 }
