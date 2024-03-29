@@ -20,7 +20,7 @@ interface DeveloperData {
 
 const developersData: DeveloperData[] = [
   {
-    title: "Java Developers",
+    title: "JS Developers",
     contributors: [contributor1, contributor2, contributor3],
     rating: 4.8,
   },
@@ -68,10 +68,6 @@ const Dashboard: React.FC = () => {
     dev.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const { address, didData, balance, ipfsData, userrole, getusers } =
-    useEthereum();
-  console.log("address", address);
-  console.log("getalldidinfo", getusers);
   return (
     <div className="pb-10">
       <ProtectedNavbar onSearch={setSearchTerm} />

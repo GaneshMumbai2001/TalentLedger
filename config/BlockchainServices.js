@@ -103,18 +103,12 @@ export const balanceOf = async (address) => {
 };
 
 export const getAllDIDInfo = async () => {
-  if (!window.ethereum) {
-    throw new Error("Ethereum object not found, install MetaMask.");
-  }
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider =
+    window.ethereum != null
+      ? new ethers.providers.Web3Provider(window.ethereum)
+      : ethers.providers.getDefaultProvider();
   const signer = provider.getSigner();
-  console.log("Address requested:", address);
-  const contract = new ethers.Contract(gigidadd, Token, signer);
-  try {
-    const didInfo = await contract.getAllDIDInfo();
-    return didInfo;
-  } catch (error) {
-    console.error("Error fetching DID info:", error);
-    throw error;
-  }
+  const Role = new ethers.Contract(gigidadd, Token, signer);
+  const tokenId = await Role.getAllDIDInfo();
+  return tokenId;
 };

@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Modal from "../../Components/ProfileModel/Model";
+import { useEthereum } from "@/app/Components/DataContext";
 
 interface GigData {
   id: number;
@@ -107,7 +108,85 @@ const page: React.FC = () => {
     setSelectedDeveloper(dev);
     setIsModalOpen(true);
   };
+  const { address, didData, balance, ipfsData, userrole, getusers, gigdata } =
+    useEthereum();
+  const [matchingDevelopers, setMatchingDevelopers] = useState([]);
+  useEffect(() => {
+    async function matchDevelopersByLanguage() {
+      let matches = [];
+      for (const category of gigdata) {
+        let categoryMatch = false;
+        for (const contributor of category.contributors) {
+          const userData = await fetchGitHubUserData(contributor);
+          const topThreeLanguages = getTopThreeLanguages(
+            userData?.user?.languagePercentages
+          );
+          if (topThreeLanguages.includes(searchTerm)) {
+            categoryMatch = true;
+            break;
+          }
+        }
 
+        if (categoryMatch) {
+          matches.push(category);
+        }
+      }
+      setMatchingDevelopers(matches);
+    }
+    if (searchTerm) {
+      matchDevelopersByLanguage();
+    }
+  }, [searchTerm]);
+
+  async function fetchGitHubUserData(username) {
+    const response = await fetch(
+      `http://localhost:8000/api/user/${username}/repos`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch GitHub user data");
+    }
+    const userData = await response.json();
+    return userData;
+  }
+
+  function getTopThreeLanguages(languagePercentages) {
+    if (
+      typeof languagePercentages !== "object" ||
+      languagePercentages === null
+    ) {
+      console.error("Invalid languagePercentages:", languagePercentages);
+      return [];
+    }
+
+    const languagesArray = Object.entries(languagePercentages);
+    languagesArray.sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
+    const topThreeLanguages = languagesArray.slice(0, 3);
+    const topThreeLanguageNames = topThreeLanguages.map(
+      ([language, _]) => language
+    );
+
+    return topThreeLanguageNames;
+  }
+
+  useEffect(() => {
+    async function getdata() {
+      for (const username of gigdata) {
+        const userData = await fetchGitHubUserData(username);
+        console.log("Full User Data:", userData);
+        const topThreeLanguages = getTopThreeLanguages(
+          userData?.user?.languagePercentages
+        );
+        console.log(
+          `Top 3 languages for ${userData?.user?.login}:`,
+          topThreeLanguages
+        );
+      }
+    }
+    getdata();
+  }, [gigdata]);
+
+  console.log("address", address);
+  console.log("getalldidinfo", getusers);
   useEffect(() => {
     if (isModalOpen) {
       document.body.classList.add("no-scroll");
