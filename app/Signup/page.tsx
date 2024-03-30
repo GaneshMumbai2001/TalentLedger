@@ -463,11 +463,13 @@ which i can simply parse it as json.
       if (selectedRole == "Provider") {
         const role = 0;
         await createdid({ address, role, ipfsHash });
+        await submitFormData();
         toast.success("Happy to Onboard to our platform!");
         router.push("/Dashboard");
       } else {
         const role = 1;
         await createdid({ address, role, ipfsHash });
+        await submitFormData();
         toast.success("Happy to Onboard to our platform!");
         router.push("/FreelancerDashboard");
       }
@@ -575,7 +577,7 @@ which i can simply parse it as json.
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // Important for server to correctly parse JSON body
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userDetails),
       }
@@ -586,7 +588,6 @@ which i can simply parse it as json.
       throw new Error(errorText || "User Already Exist!");
     }
     const result = await response.json();
-    // Handle the result here, such as updating UI or redirecting the user
   }
 
   const fileInputRef = useRef(null);
