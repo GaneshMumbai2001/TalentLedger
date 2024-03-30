@@ -50,16 +50,19 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, job }) => {
 
   const handleApply = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/apply-for-gig", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          gigId: job._id,
-          address: address,
-        }),
-      });
+      const response = await fetch(
+        "https://talentledger-be.vercel.app/api/apply-for-gig",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            gigId: job._id,
+            address: address,
+          }),
+        }
+      );
 
       const data = await response.json();
 
