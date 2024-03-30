@@ -113,7 +113,7 @@ function page() {
               <img
                 src={ipfsData?.profileImage ?? gigData.image}
                 alt="home"
-                className="h-24 rounded-full w-auto"
+                className="h-24 rounded-full w-24"
               />
               <Image
                 src={ellipse}

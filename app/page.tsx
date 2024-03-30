@@ -167,7 +167,12 @@ export default function Home({ onSearch }: SearchProps) {
     if (didData == "") {
       router.push("/Signup");
     } else {
-      router.push("/Dashboard");
+      console.log("diddata", didData[6]);
+      if (didData[6] == 1) {
+        router.push("/FreelancerDashboard");
+      } else {
+        router.push("/Dashboard");
+      }
     }
   };
   const reviews = [

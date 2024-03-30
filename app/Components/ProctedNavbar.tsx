@@ -111,7 +111,7 @@ function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
               <img
                 src={ipfsData.profileImage ?? profile}
                 alt="profile"
-                className="w-12 h-auto rounded-full"
+                className="w-12 h-12 rounded-full"
               />
               {isProfileDropdownOpen && (
                 <div className="absolute -right-4 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">

@@ -6,15 +6,26 @@ import {
   AiOutlinePlus,
   AiOutlineArrowRight,
   AiFillDelete,
+  AiOutlineCloudUpload,
+  AiOutlineLoading3Quarters,
 } from "react-icons/ai";
 import Image from "next/image";
+import Hero from "../../assets/Hero.png";
+import Navbar from "../Components/Navbar";
 import { useRouter } from "next/navigation";
+import { ProgressBar } from "../Components/ProgressBar";
+import logo from "../../assets/logo2.png";
 import role1 from "../../assets/person.svg";
 import role2 from "../../assets/work.svg";
 import cloud from "../../assets/cloud.svg";
 import file from "../../assets/file.svg";
 import { uploadJSONToPinata, uploadFileToPinata } from "../../config/pintoIPFS";
-import { createdid } from "@/config/BlockchainServices";
+import {
+  Onboard,
+  RetreiveByAddress,
+  checkOnboarded,
+  createdid,
+} from "@/config/BlockchainServices";
 import { ethers } from "ethers";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -443,20 +454,20 @@ which i can simply parse it as json.
     try {
       const pinataResponse = await pinJSONToIPFS();
       console.log("Pinata Response:", pinataResponse.IpfsHash);
+      // setipfshash();
       const ipfsHash = pinataResponse.IpfsHash;
-      setipfshash(ipfsHash);
       console.log("Decoding IPFS hash:", ipfsHash);
+      // Proceed to decode the hash here
+
       console.log("did", { address, selectedRole, ipfsHash });
       if (selectedRole == "Provider") {
         const role = 0;
         await createdid({ address, role, ipfsHash });
-        await submitFormData();
         toast.success("Happy to Onboard to our platform!");
         router.push("/Dashboard");
       } else {
         const role = 1;
         await createdid({ address, role, ipfsHash });
-        await submitFormData();
         toast.success("Happy to Onboard to our platform!");
         router.push("/FreelancerDashboard");
       }
@@ -560,11 +571,11 @@ which i can simply parse it as json.
     };
     console.log("userdetails", userDetails);
     const response = await fetch(
-      "https://talentledger-be.vercel.app/api/signup",
+      "https://talentledger-be.vercel.app/api/register",
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", // Important for server to correctly parse JSON body
         },
         body: JSON.stringify(userDetails),
       }
@@ -575,6 +586,7 @@ which i can simply parse it as json.
       throw new Error(errorText || "User Already Exist!");
     }
     const result = await response.json();
+    // Handle the result here, such as updating UI or redirecting the user
   }
 
   const fileInputRef = useRef(null);

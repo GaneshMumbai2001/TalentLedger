@@ -220,7 +220,7 @@ const page: React.FC = () => {
                 <img
                   src={dev.profileImage}
                   alt=""
-                  className="h-24 rounded-full w-auto"
+                  className="h-24 rounded-full w-24"
                 />
                 <img
                   src={ellipse}

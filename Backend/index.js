@@ -8,14 +8,18 @@ const resumeRoutes = require("./routes/resume");
 const gigRoutes = require("./routes/gig");
 
 const app = express();
-app.use(cors());
+app.use(cors()); // This line enables CORS for all routes and methods, with default settings
+
+// Custom middleware to dynamically set the Access-Control-Allow-Origin header
 app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "*",
+  const allowedOrigins = [
     "https://talentledger.vercel.app",
-    "http://localhost:3000"
-  );
+    "http://localhost:3000",
+  ]; // List of allowed origins
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin); // Set the received origin in the allowed list
+  }
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
