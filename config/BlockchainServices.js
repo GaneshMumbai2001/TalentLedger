@@ -17,9 +17,7 @@ export const createdid = async ({ address, role, ipfsHash }) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
   const Role = new ethers.Contract(gigidadd, Token, signer);
-  const tokenId = await Role.registerDID(address, role, ipfsHash, {
-    gasLimit: 60000,
-  });
+  const tokenId = await Role.registerDID(address, role, ipfsHash);
   console.log(tokenId);
   return tokenId;
 };
