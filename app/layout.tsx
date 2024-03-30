@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 import { AnonAadhaarProvider } from "@anon-aadhaar/react";
 
 export const metadata: Metadata = {
-  title: "TaletLedger",
+  title: "TalentLedger",
   description: "Decentralized Gig Hiring platform",
 };
 
