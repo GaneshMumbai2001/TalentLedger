@@ -3,9 +3,12 @@ import { MdVerified } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import Image from "next/image";
 import payment from "../../../assets/payment.svg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useEthereum } from "../DataContext";
 
 interface JobData {
-  id?: number;
+  _id?: number;
   name?: string;
   title?: string;
   role?: string;
@@ -23,6 +26,8 @@ interface ModalProps {
   job: JobData;
 }
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, job }) => {
+  const { address, didData, balance, ipfsData, userrole } = useEthereum();
+
   if (!isOpen || !job) return null;
   const timeAgo = (dateString) => {
     const now = new Date();
@@ -40,6 +45,32 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, job }) => {
       return `${hours} hours ago`;
     } else {
       return `${days} days ago`;
+    }
+  };
+
+  const handleApply = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/api/apply-for-gig", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          gigId: job._id,
+          address: address,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 201) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Failed to apply for gig:", error);
+      toast.error("Failed to apply for gig");
     }
   };
 
@@ -76,12 +107,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, job }) => {
           </div>
           <div className="bg-[#FBF4EE] w-full flex flex-col min-h-screen px-10  py-5 ">
             <div className="flex flex-col mx-5">
-              <button className="bg-[#00CBA0] flex space-x-2 items-center  px-5 py-1 rounded-lg font-medium">
+              <button
+                onClick={handleApply}
+                className="bg-[#00CBA0] flex space-x-2 items-center px-5 py-1 rounded-lg font-medium"
+              >
                 <span>Apply Now</span> <FaArrowRight />
               </button>
               <button className="text-[#00CBA0] border-2 border-[#00CBA0] mt-4 flex space-x-2 items-center px-5 py-1 rounded-lg font-medium">
                 <CiHeart /> <span>Save Job</span>
               </button>
+              <ToastContainer />
             </div>
             <div>
               <p className="font-semibold text-xl mt-10">About the client</p>

@@ -28,7 +28,7 @@ function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   console.log("userorle", didData[6]);
   const navLinks = [{ name: "", id: "", path: "" }];
-  if (didData && didData[6] != 1) {
+  if (didData && didData[6] == 1) {
     navLinks.splice(1, 0, {
       name: "Ongoing Gig",
       id: "Ongoing",
@@ -61,6 +61,7 @@ function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
       path: "/Dashboard",
     });
   }
+  console.log(didData[6], "data of 6");
 
   const handleSearchChange = (e: any) => {
     const newSearchTerm = e.target.value;

@@ -299,19 +299,12 @@ router.get("/gigApplicants", async (req, res) => {
   }
 });
 
-// POST endpoint for applying for a gig
 router.post("/apply-for-gig", async (req, res) => {
   try {
-    const { gigId } = req.body;
+    const { gigId, address } = req.body;
     console.log("Gig ID: ", gigId);
-    const userId = req.userId;
-    console.log("User ID: ", userId);
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const userDid = user._id;
-    // Check if the gig exists
+    const userId = address;
+
     const gig = await Gig.findById(gigId);
     if (!gig) {
       return res.status(404).json({ message: "Gig not found" });
@@ -321,14 +314,12 @@ router.post("/apply-for-gig", async (req, res) => {
         .status(403)
         .json({ message: "Creator of the gig cannot apply" });
     }
-    // Check if the user has already applied for the gig
-    if (gig.applicants.includes(userDid)) {
+    if (gig.applicants.includes(userId)) {
       return res
         .status(203)
         .json({ message: "You have already applied for this gig" });
     }
-    // Update the gig's applicants array with the user's ID
-    gig.applicants.push(userDid);
+    gig.applicants.push(userId);
     await gig.save();
     res.status(201).json({ message: "Application submitted successfully" });
   } catch (error) {
@@ -337,7 +328,6 @@ router.post("/apply-for-gig", async (req, res) => {
   }
 });
 
-// POST endpoint for selecting a candidate for a gig
 router.post("/selectApplicant", async (req, res) => {
   console.log("Selecting candidate");
   try {
@@ -623,6 +613,7 @@ router.put("/drop-gig/:gigId", async (req, res) => {
 router.get("/all-gigs", async (req, res) => {
   try {
     const allGigs = await Gig.find();
+
     res.status(200).json({ gigs: allGigs });
   } catch (error) {
     console.error(error);
