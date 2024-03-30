@@ -81,7 +81,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   </div>
                 </div>
                 <Link
-                  href={`/Dashboard/${data.name}/Connect?user=${data.name}?designation=${data.designation}`}
+                  href={`/Dashboard/${data.name}/Connect?user=${data.name}&designation=${data.designation}`}
                 >
                   <button className="bg-black items-center flex space-x-3 mt-3 text-lg font-semibold text-white px-20 py-2 rounded-lg">
                     <Image src={send} alt="" />
