@@ -16,18 +16,17 @@ export const createdid = async ({ address, role, ipfsHash }) => {
   }
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
-  const Role = new ethers.Contract(gigidadd, Token, signer);
+  console.log("Address requested:", address);
+  const contract = new ethers.Contract(gigidadd, Token, signer);
 
-  // Estimate gas limit with a buffer
-  const estimatedGasLimit = await Role.estimateGas
-    .registerDID(address, role, ipfsHash)
-    .then((gasEstimate) => gasEstimate.add(100000));
-
-  const tokenId = await Role.registerDID(address, role, ipfsHash, {
-    gasLimit: estimatedGasLimit,
-  });
-  console.log(tokenId);
-  return tokenId;
+  try {
+    const didInfo = await contract.registerDID(address, role, ipfsHash);
+    console.log("Registered did:", didInfo);
+    return didInfo;
+  } catch (error) {
+    console.error("Error fetching DID info:", error);
+    throw error;
+  }
 };
 
 export const getDIDInfos = async (address) => {
