@@ -564,20 +564,22 @@ which i can simply parse it as json.
   }
 
   async function submitFormData() {
-    // Assuming `address` and `selectedRole` are gathered from your application state or inputs
     const userDetails = {
-      address: address, // Make sure this is the user's blockchain address
-      role: selectedRole, // Ensure this is aligned with the roles defined in your smart contract
-      ipfsHash: ipfsHash, // This is the IPFS hash of the user's data
+      address: address,
+      role: selectedRole,
+      ipfsHash: ipfsHash,
     };
     console.log("userdetails", userDetails);
-    const response = await fetch("https://gigshub-v1.vercel.app/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // Important for server to correctly parse JSON body
-      },
-      body: JSON.stringify(userDetails),
-    });
+    const response = await fetch(
+      "https://talentledger-be.vercel.app/api/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Important for server to correctly parse JSON body
+        },
+        body: JSON.stringify(userDetails),
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();

@@ -15,7 +15,7 @@ export default function Page() {
     setError(null);
     try {
       const response = await fetch(
-        `https://gigshub-v1.vercel.app/api/user/${username}/repos`
+        `https://talentledger-be.vercel.app/api/user/${username}/repos`
       );
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);

@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema(
   {
     ipfsHash: { type: String, required: true },
+    role: { type: String, required: true },
     address: { type: String, unique: true },
   },
   { timestamps: true }

@@ -66,7 +66,7 @@ router.post("/post-gig", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/appliedGigs", verifyToken, async (req, res) => {
+router.get("/appliedGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -99,7 +99,7 @@ router.get("/appliedGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/PostedGigs", verifyToken, async (req, res) => {
+router.get("/PostedGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -127,7 +127,7 @@ router.get("/PostedGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/PostedOnGoingGigs", verifyToken, async (req, res) => {
+router.get("/PostedOnGoingGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -155,7 +155,7 @@ router.get("/PostedOnGoingGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/PostedOnCancelledGigs", verifyToken, async (req, res) => {
+router.get("/PostedOnCancelledGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -178,7 +178,7 @@ router.get("/PostedOnCancelledGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/PostedOnCompletedGigs", verifyToken, async (req, res) => {
+router.get("/PostedOnCompletedGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -206,7 +206,7 @@ router.get("/PostedOnCompletedGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/selectedGigs", verifyToken, async (req, res) => {
+router.get("/selectedGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -233,7 +233,7 @@ router.get("/selectedGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/completedGigs", verifyToken, async (req, res) => {
+router.get("/completedGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -260,7 +260,7 @@ router.get("/completedGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/CancelledGigs", verifyToken, async (req, res) => {
+router.get("/CancelledGigs", async (req, res) => {
   try {
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -287,7 +287,7 @@ router.get("/CancelledGigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/gigApplicants", verifyToken, async (req, res) => {
+router.get("/gigApplicants", async (req, res) => {
   try {
     // console.log(req);
     const gigId = req.query.gigId; // Adjusted to use query parameter
@@ -319,7 +319,7 @@ router.get("/gigApplicants", verifyToken, async (req, res) => {
 });
 
 // POST endpoint for applying for a gig
-router.post("/apply-for-gig", verifyToken, async (req, res) => {
+router.post("/apply-for-gig", async (req, res) => {
   try {
     const { gigId } = req.body;
     console.log("Gig ID: ", gigId);
@@ -357,7 +357,7 @@ router.post("/apply-for-gig", verifyToken, async (req, res) => {
 });
 
 // POST endpoint for selecting a candidate for a gig
-router.post("/selectApplicant", verifyTokenOfProvider, async (req, res) => {
+router.post("/selectApplicant", async (req, res) => {
   console.log("Selecting candidate");
   try {
     const { gigId, applicantId } = req.body; // Or wherever these values are coming from
@@ -400,7 +400,7 @@ router.post("/selectApplicant", verifyTokenOfProvider, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.post("/notifyAsComplete", verifyTokenOfProvider, async (req, res) => {
+router.post("/notifyAsComplete", async (req, res) => {
   console.log("Notifying as complete");
 
   const { gigId, taskId } = req.body;
@@ -446,7 +446,7 @@ router.post("/notifyAsComplete", verifyTokenOfProvider, async (req, res) => {
     res.status(500).send({ message: "Internal server error" });
   }
 });
-router.post("/notifyAsClaimed", verifyTokenOfProvider, async (req, res) => {
+router.post("/notifyAsClaimed", async (req, res) => {
   console.log("Notifying as Claimed");
 
   const { gigId, taskId } = req.body;
@@ -494,7 +494,7 @@ router.post("/notifyAsClaimed", verifyTokenOfProvider, async (req, res) => {
 });
 router.post(
   "/taskUpdateFromProvider",
-  verifyTokenOfProvider,
+
   async (req, res) => {
     console.log("taskUpdateFromProvider");
 
@@ -547,7 +547,7 @@ router.post(
 // GET endpoint for displaying applicants for a particular gig
 router.get(
   "/gig-applicants/:gigId",
-  verifyTokenOfProvider,
+
   async (req, res) => {
     try {
       const userId = req.userId;
@@ -569,7 +569,7 @@ router.get(
 );
 
 // PUT endpoint to update the completed status of a gig
-router.put("/complete-gig/:gigId", verifyTokenOfProvider, async (req, res) => {
+router.put("/complete-gig/:gigId", async (req, res) => {
   try {
     const gigId = req.params.gigId;
 
@@ -596,7 +596,7 @@ router.put("/complete-gig/:gigId", verifyTokenOfProvider, async (req, res) => {
 });
 
 // PUT endpoint to update the withdrawal status of a gig
-router.put("/withdraw-gig/:gigId", verifyTokenOfProvider, async (req, res) => {
+router.put("/withdraw-gig/:gigId", async (req, res) => {
   try {
     const gigId = req.params.gigId;
     // Find the gig based on the gig ID
@@ -617,7 +617,7 @@ router.put("/withdraw-gig/:gigId", verifyTokenOfProvider, async (req, res) => {
 });
 
 // PUT endpoint to update the dropped status of a gig
-router.put("/drop-gig/:gigId", verifyTokenOfProvider, async (req, res) => {
+router.put("/drop-gig/:gigId", async (req, res) => {
   try {
     const gigId = req.params.gigId;
 
@@ -640,7 +640,7 @@ router.put("/drop-gig/:gigId", verifyTokenOfProvider, async (req, res) => {
 });
 
 // GET endpoint to get all posted gigs
-router.get("/all-gigs", verifyToken, async (req, res) => {
+router.get("/all-gigs", async (req, res) => {
   try {
     // Find all gigs in the database
     const allGigs = await Gig.find();
@@ -654,7 +654,7 @@ router.get("/all-gigs", verifyToken, async (req, res) => {
 
 router.get(
   "/gigs-with-applicant/:applicantId",
-  verifyToken,
+
   async (req, res) => {
     console.log("Gigs with applicant");
     try {
@@ -672,7 +672,7 @@ router.get(
     }
   }
 );
-router.get("/ongoinggigs/:applicantId", verifyToken, async (req, res) => {
+router.get("/ongoinggigs/:applicantId", async (req, res) => {
   console.log("Gigs with applicant");
   try {
     const applicantId = req.params.applicantId;
@@ -691,7 +691,7 @@ router.get("/ongoinggigs/:applicantId", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/completed-gigs/:applicantId", verifyToken, async (req, res) => {
+router.get("/completed-gigs/:applicantId", async (req, res) => {
   console.log("Gigs with applicant");
   try {
     const applicantId = req.params.applicantId;
@@ -711,7 +711,7 @@ router.get("/completed-gigs/:applicantId", verifyToken, async (req, res) => {
   }
 });
 
-router.get("/get-gigs", verifyToken, async (req, res) => {
+router.get("/get-gigs", async (req, res) => {
   try {
     // Access the decoded user information from the JWT token
     const decodedToken = req.user;
@@ -743,7 +743,7 @@ router.get("/get-gigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/get-current-gigs", verifyToken, async (req, res) => {
+router.get("/get-current-gigs", async (req, res) => {
   try {
     // Access the decoded user information from the JWT token
     const decodedToken = req.user;
@@ -778,7 +778,7 @@ router.get("/get-current-gigs", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-router.get("/get-completed-gigs", verifyToken, async (req, res) => {
+router.get("/get-completed-gigs", async (req, res) => {
   try {
     // Access the decoded user information from the JWT token
     const decodedToken = req.user;
@@ -815,7 +815,7 @@ router.get("/get-completed-gigs", verifyToken, async (req, res) => {
 });
 
 // PUT endpoint to allow the selected candidate to withdraw from the gig
-router.put("/withdraw-from-gig/:gigId", verifyToken, async (req, res) => {
+router.put("/withdraw-from-gig/:gigId", async (req, res) => {
   try {
     const gigId = req.params.gigId;
 
@@ -858,7 +858,7 @@ router.put("/withdraw-from-gig/:gigId", verifyToken, async (req, res) => {
 
 router.put(
   "/mark-paid-to-escrow/:gigId",
-  verifyTokenOfProvider,
+
   async (req, res) => {
     try {
       const gigId = req.params.gigId;

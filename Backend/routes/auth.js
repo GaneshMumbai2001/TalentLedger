@@ -9,7 +9,7 @@ const { Octokit } = require("@octokit/core");
 const abi = require("../helpers/did.json");
 
 router.post("/signup", async (req, res) => {
-  const { address, ipfsHash } = req.body;
+  const { address, role, ipfsHash } = req.body;
 
   try {
     const existingUser = await User.findOne({ address });
@@ -18,6 +18,7 @@ router.post("/signup", async (req, res) => {
     }
     const newUser = await User.create({
       address: address,
+      role: role,
       ipfsHash: ipfsHash,
     });
 

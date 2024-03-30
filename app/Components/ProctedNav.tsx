@@ -21,14 +21,17 @@ import {
   Theme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { sepolia } from "wagmi/chains";
+import { polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 interface ProtectedNavbarProps {
   onSearch?: (searchTerm: string) => void;
 }
 
-const { chains, publicClient } = configureChains([sepolia], [publicProvider()]);
+const { chains, publicClient } = configureChains(
+  [polygonMumbai],
+  [publicProvider()]
+);
 
 const { connectors } = getDefaultWallets({
   appName: "talentledger",
