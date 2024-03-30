@@ -52,7 +52,7 @@ const gigData = {
 
 function page() {
   const [selectedCategory, setSelectedCategory] = useState("");
-  const shareURL = `https://gigshub.xyz/${gigData.name}`;
+  const shareURL = `https://talentledger.vercel.app/${gigData.name}`;
   const { address, didData, balance, ipfsData, userrole } = useEthereum();
   console.log("add", address);
   console.log("did", didData);
@@ -63,7 +63,7 @@ function page() {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Share Gigshub",
+          title: "Share TalentLayer",
           text: "Check out this awesome website!",
           url: shareURL,
         });

@@ -31,7 +31,7 @@ interface ProtectedNavbarProps {
 const { chains, publicClient } = configureChains([sepolia], [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
-  appName: "Gigshub",
+  appName: "talentledger",
   projectId: "14b7354cf96cf3a50f28ab21ccd962d1",
   chains,
 });

@@ -21,8 +21,8 @@ import { CheckTokenBalance } from "@/config/BlockchainServices";
 const { chains, publicClient } = configureChains([sepolia], [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
-  appName: "Gigshub",
-  projectId: "GigshubV1",
+  appName: "talentledger",
+  projectId: "talentledger",
   chains,
 });
 
