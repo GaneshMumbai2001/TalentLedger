@@ -8,7 +8,7 @@ import {
   Theme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
+import { polygonZkEvmTestnet } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import Image from "next/image";
@@ -19,7 +19,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { CheckTokenBalance } from "@/config/BlockchainServices";
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai],
+  [polygonZkEvmTestnet],
   [publicProvider()]
 );
 

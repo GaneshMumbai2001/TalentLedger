@@ -21,7 +21,7 @@ import {
   Theme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
+import { polygonZkEvmTestnet } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 interface ProtectedNavbarProps {
@@ -29,7 +29,7 @@ interface ProtectedNavbarProps {
 }
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai],
+  [polygonZkEvmTestnet],
   [publicProvider()]
 );
 
