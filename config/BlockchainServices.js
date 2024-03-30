@@ -8,7 +8,7 @@ if (ethereum) {
   isBrowser().web3 = new Web3(ethereum);
   isBrowser().web3 = new Web3(isBrowser().web3.currentProvider);
 }
-const gigidadd = "0xC588A98e0625f28457B949F1638D0F901fF06beD";
+const gigidadd = "0xF171EBDe46E25E19C4bF9f2aa830638354A096f5";
 
 export const createdid = async ({ address, role, ipfsHash }) => {
   if (!window.ethereum) {

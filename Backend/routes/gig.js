@@ -4,55 +4,7 @@ const jwt = require("jsonwebtoken");
 const Gig = require("../models/Gig");
 const User = require("../models/User");
 
-const verifyTokenOfProvider = async (req, res, next) => {
-  const token = req.headers["authorization"];
-  if (!token || !token.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  const tokenValue = token.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(
-      tokenValue,
-      "048af2438891a89a3536ac09cc96ccbd34a1714e88cf8fdb63e6186dcc3ff89d"
-    );
-    req.userId = decoded.userId;
-    const user = await User.findById(req.userId);
-    console.log(user);
-    if (!user) {
-      return res
-        .status(403)
-        .json({ message: "User is not authorized to post gigs" });
-    }
-    next();
-  } catch (err) {
-    console.error(err);
-    return res.status(401).json({ message: "Invalid token" });
-  }
-};
-
-const verifyToken = (req, res, next) => {
-  console.log("Token verification");
-  const tokenHeader = req.headers["authorization"];
-  if (!tokenHeader || !tokenHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  const token = tokenHeader.split(" ")[1];
-  jwt.verify(
-    token,
-    "048af2438891a89a3536ac09cc96ccbd34a1714e88cf8fdb63e6186dcc3ff89d",
-    (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: "Invalid token" });
-      }
-      req.userId = decoded.userId;
-      next();
-    }
-  );
-};
-
-// POST endpoint for posting a gig
-router.post("/post-gig", verifyTokenOfProvider, async (req, res) => {
+router.post("/post-gig", async (req, res) => {
   try {
     const {
       title,

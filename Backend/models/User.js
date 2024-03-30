@@ -3,12 +3,8 @@ const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
-    signature: { type: String, required: true, unique: true },
-    persona: { type: String, required: true },
-    address: { type: String, required: true },
-    name: { type: String, required: true },
-    lastName: { type: String, required: true },
-    did: { type: String, unique: true },
+    ipfsHash: { type: String, required: true },
+    address: { type: String, unique: true },
   },
   { timestamps: true }
 );

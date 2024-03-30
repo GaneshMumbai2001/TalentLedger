@@ -221,6 +221,10 @@ function page() {
                 <p className="text-[#F24E4D] bg-[#FFE5E4] px-4 py-1 rounded-full">
                   {milestone.paymentStatus}
                 </p>
+                <button className="text-[#FFC830] bg-[#FCEAC2] px-4 py-1 rounded-full">
+                  {" "}
+                  Dispute
+                </button>
                 <button className="border border-[#DCDCDC] px-8 rounded-lg font-medium py-2 text-sm">
                   {" "}
                   Reject

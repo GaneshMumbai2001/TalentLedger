@@ -7,6 +7,7 @@ import { store, persistor } from "../store/store";
 import { Providers } from "@/store/provider";
 import { EthereumProvider } from "./Components/DataContext";
 const inter = Inter({ subsets: ["latin"] });
+import { AnonAadhaarProvider } from "@anon-aadhaar/react";
 
 export const metadata: Metadata = {
   title: "TaletLedger",
@@ -25,8 +26,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Providers>
-          {" "}
-          <EthereumProvider>{children} </EthereumProvider>
+          <EthereumProvider> {children}</EthereumProvider>
         </Providers>
       </body>
     </html>

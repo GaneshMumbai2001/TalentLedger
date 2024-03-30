@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 import {
   balanceOf,
   getAllDIDInfo,
@@ -9,6 +10,40 @@ import {
 
 const EthereumContext = createContext();
 
+const QueryURL =
+  "https://api.studio.thegraph.com/query/69619/test/version/latest";
+const query = `
+  query {
+    didregistereds {
+      id
+      role
+      ipfsHash
+    }
+  }
+`;
+
+const escrowquery = `
+query MyQuery {
+  escrowCreateds(
+    first: 10
+    orderBy: id
+    orderDirection: asc
+    skip: 10
+    subgraphError: allow
+  ) {
+    amount
+    blockNumber
+    blockTimestamp
+    escrowId
+    id
+    provider
+    transactionHash
+  }
+}`;
+const client = new ApolloClient({
+  uri: QueryURL,
+  cache: new InMemoryCache(),
+});
 export const EthereumProvider = ({ children }) => {
   const [address, setAddress] = useState("");
   const [getusers, setGetusers] = useState();
@@ -17,6 +52,36 @@ export const EthereumProvider = ({ children }) => {
   const [userrole, setUserrole] = useState("");
   const [ipfsData, setIpfsData] = useState({});
   const [balance, setBalance] = useState("");
+  const [dataUpdateds, setDataUpdates] = useState([]);
+
+  useEffect(() => {
+    const getDataUpdates = async () => {
+      client
+        .query({
+          query: gql(query),
+          variables: { userAddress: address },
+        })
+        .then((data) => {
+          const finalData = data;
+          console.log("Data from GraphQL", finalData.data.didregistereds);
+          setDataUpdates(finalData.data.didregistereds);
+        });
+      client
+        .query({
+          query: gql(escrowquery),
+          variables: { userAddress: address },
+        })
+        .then((data) => {
+          const finalData = data;
+          console.log("Data from GraphQL", finalData.data.didregistereds);
+          setDataUpdates(finalData.data.didregistereds);
+        });
+    };
+    getDataUpdates();
+  }, []);
+
+  console.log("dataUpdateds", dataUpdateds);
+
   function extractGitHubUsernames(ipfsDataArray) {
     return ipfsDataArray.flatMap((data) => {
       return data.links

@@ -12,22 +12,55 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import Link from "next/link";
+import { useEthereum } from "./DataContext";
 
 interface ProtectedNavbarProps {
   onSearch?: (searchTerm: string) => void;
 }
 
 function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
+  const { address, didData, balance, ipfsData, userrole, getusers, gigdata } =
+    useEthereum();
+
   const [activeLink, setActiveLink] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-
-  const navLinks = [
-    { name: "About Us", id: "about" },
-    { name: "Find Gigs", id: "gigs" },
-    { name: "Contact Us", id: "contact" },
-  ];
+  console.log("userorle", didData[6]);
+  const navLinks = [{ name: "", id: "", path: "" }];
+  if (didData && didData[6] != 1) {
+    navLinks.splice(1, 0, {
+      name: "Ongoing Gig",
+      id: "Ongoing",
+      path: "/GigDetails",
+    });
+    navLinks.splice(1, 0, {
+      name: "Manage Gigs",
+      id: "manage",
+      path: "/Manage",
+    });
+    navLinks.splice(1, 0, {
+      name: "Home",
+      id: "Home",
+      path: "/FreelancerDashboard",
+    });
+  } else {
+    navLinks.splice(1, 0, {
+      name: "Post Gig",
+      id: "postgig",
+      path: "/PostGig",
+    });
+    navLinks.splice(1, 0, {
+      name: "Ongoing Gigs",
+      id: "Ongoing",
+      path: "/GigDetails2",
+    });
+    navLinks.splice(1, 0, {
+      name: "Home",
+      id: "Home",
+      path: "/Dashboard",
+    });
+  }
 
   const handleSearchChange = (e: any) => {
     const newSearchTerm = e.target.value;
@@ -58,15 +91,17 @@ function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
         <div className="md:block hidden">
           <div className="flex text-lg font-bold space-x-14 items-center ">
             {navLinks.map((link) => (
-              <p
-                key={link.id}
-                className={`hover:text-[#00CBA0] cursor-pointer ${
-                  activeLink === link.id ? "text-[#00CBA0]" : ""
-                }`}
-                onClick={() => setActiveLink(link.id)}
-              >
-                {link.name}
-              </p>
+              <Link href={link.path}>
+                <p
+                  key={link.id}
+                  className={`hover:text-[#00CBA0] cursor-pointer ${
+                    activeLink === link.id ? "text-[#00CBA0]" : ""
+                  }`}
+                  onClick={() => setActiveLink(link.id)}
+                >
+                  {link.name}
+                </p>
+              </Link>
             ))}
             <div
               onClick={toggleProfileDropdown}
