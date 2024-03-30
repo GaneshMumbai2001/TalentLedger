@@ -22,7 +22,7 @@ router.post("/signup", async (req, res) => {
       ipfsHash: ipfsHash,
     });
 
-    res.status(200).json({ message: "Registration successful!", token });
+    res.status(200).json({ message: "Registration successful!" });
   } catch (error) {
     console.error(error);
   }

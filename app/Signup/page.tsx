@@ -6,26 +6,15 @@ import {
   AiOutlinePlus,
   AiOutlineArrowRight,
   AiFillDelete,
-  AiOutlineCloudUpload,
-  AiOutlineLoading3Quarters,
 } from "react-icons/ai";
 import Image from "next/image";
-import Hero from "../../assets/Hero.png";
-import Navbar from "../Components/Navbar";
 import { useRouter } from "next/navigation";
-import { ProgressBar } from "../Components/ProgressBar";
-import logo from "../../assets/logo2.png";
 import role1 from "../../assets/person.svg";
 import role2 from "../../assets/work.svg";
 import cloud from "../../assets/cloud.svg";
 import file from "../../assets/file.svg";
 import { uploadJSONToPinata, uploadFileToPinata } from "../../config/pintoIPFS";
-import {
-  Onboard,
-  RetreiveByAddress,
-  checkOnboarded,
-  createdid,
-} from "@/config/BlockchainServices";
+import { createdid } from "@/config/BlockchainServices";
 import { ethers } from "ethers";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -454,11 +443,9 @@ which i can simply parse it as json.
     try {
       const pinataResponse = await pinJSONToIPFS();
       console.log("Pinata Response:", pinataResponse.IpfsHash);
-      // setipfshash();
       const ipfsHash = pinataResponse.IpfsHash;
+      setipfshash(ipfsHash);
       console.log("Decoding IPFS hash:", ipfsHash);
-      // Proceed to decode the hash here
-
       console.log("did", { address, selectedRole, ipfsHash });
       if (selectedRole == "Provider") {
         const role = 0;
