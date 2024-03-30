@@ -404,8 +404,7 @@
     "name": "registerDID",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function",
-    "gaslimit": 300000000
+    "type": "function"
   },
   {
     "inputs": [

@@ -141,7 +141,7 @@ const page: React.FC = () => {
 
   async function fetchGitHubUserData(username) {
     const response = await fetch(
-      `http://localhost:8000/api/user/${username}/repos`
+      `https://talentledger-be.vercel.app/api/user/${username}/repos`
     );
     if (!response.ok) {
       throw new Error("Failed to fetch GitHub user data");
