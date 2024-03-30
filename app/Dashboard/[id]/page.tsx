@@ -108,8 +108,16 @@ const page: React.FC = () => {
     setSelectedDeveloper(dev);
     setIsModalOpen(true);
   };
-  const { address, didData, balance, ipfsData, userrole, getusers, gigdata } =
-    useEthereum();
+  const {
+    address,
+    didData,
+    balance,
+    ipfsData,
+    userrole,
+    getusers,
+    gigdata,
+    getallusers,
+  } = useEthereum();
   const [matchingDevelopers, setMatchingDevelopers] = useState([]);
   useEffect(() => {
     async function matchDevelopersByLanguage() {
@@ -186,7 +194,7 @@ const page: React.FC = () => {
   }, [gigdata]);
 
   console.log("address", address);
-  console.log("getalldidinfo", getusers);
+  console.log("getalldidinfo", getallusers);
   useEffect(() => {
     if (isModalOpen) {
       document.body.classList.add("no-scroll");

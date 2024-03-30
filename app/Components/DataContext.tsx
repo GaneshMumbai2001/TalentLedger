@@ -49,8 +49,9 @@ export const EthereumProvider = ({ children }) => {
           }
           const users = await getAllDIDInfo();
           console.log("users", users);
+
           const ipfsHashes = users[2];
-          const ipfsDataPromises = ipfsHashes.map(fetchIPFSData);
+          const ipfsDataPromises = ipfsHashes.map(fetchallIPFSData);
           try {
             const ipfsDataArray = await Promise.all(ipfsDataPromises);
             console.log("All IPFS Data:", ipfsDataArray);
@@ -72,8 +73,17 @@ export const EthereumProvider = ({ children }) => {
         }
       }
     }
-
     async function fetchIPFSData(ipfsHash) {
+      const url = `https://ipfs.io/ipfs/${ipfsHash}`; // Using a public IPFS gateway
+      try {
+        const response = await fetch(url);
+        const data = await response.json(); // Assuming the IPFS data is in JSON format
+        setIpfsData(data); // Store the fetched IPFS data
+      } catch (error) {
+        console.error("Failed to fetch IPFS data:", error);
+      }
+    }
+    async function fetchallIPFSData(ipfsHash) {
       const url = `https://ipfs.io/ipfs/${ipfsHash}`;
       try {
         const response = await fetch(url);
