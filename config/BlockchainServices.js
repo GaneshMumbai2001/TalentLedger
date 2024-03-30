@@ -8,7 +8,7 @@ if (ethereum) {
   isBrowser().web3 = new Web3(ethereum);
   isBrowser().web3 = new Web3(isBrowser().web3.currentProvider);
 }
-const gigidadd = "0x1bD9C00E6544E5b1720a364CABbD281801FdC718";
+const gigidadd = "0x04BE536763d295be88f43095e6D14f112F49a80E";
 
 export const createdid = async ({ address, role, ipfsHash }) => {
   if (!window.ethereum) {
@@ -23,7 +23,6 @@ export const createdid = async ({ address, role, ipfsHash }) => {
     .registerDID(address, role, ipfsHash)
     .then((gasEstimate) => gasEstimate.add(100000));
 
-  // Include custom gas limit in the transaction
   const tokenId = await Role.registerDID(address, role, ipfsHash, {
     gasLimit: estimatedGasLimit,
   });

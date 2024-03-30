@@ -8,7 +8,7 @@ import {
   Theme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygonZkEvmTestnet } from "wagmi/chains";
+import { sepolia } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import Image from "next/image";
@@ -18,10 +18,7 @@ import Link from "next/link";
 import { AiOutlineMenu } from "react-icons/ai";
 import { CheckTokenBalance } from "@/config/BlockchainServices";
 
-const { chains, publicClient } = configureChains(
-  [polygonZkEvmTestnet],
-  [publicProvider()]
-);
+const { chains, publicClient } = configureChains([sepolia], [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
   appName: "Gigshub",

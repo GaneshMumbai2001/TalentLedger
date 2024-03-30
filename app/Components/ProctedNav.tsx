@@ -21,17 +21,14 @@ import {
   Theme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygonZkEvmTestnet } from "wagmi/chains";
+import { sepolia } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 interface ProtectedNavbarProps {
   onSearch?: (searchTerm: string) => void;
 }
 
-const { chains, publicClient } = configureChains(
-  [polygonZkEvmTestnet],
-  [publicProvider()]
-);
+const { chains, publicClient } = configureChains([sepolia], [publicProvider()]);
 
 const { connectors } = getDefaultWallets({
   appName: "Gigshub",
