@@ -20,7 +20,7 @@ interface DeveloperData {
 
 const developersData: DeveloperData[] = [
   {
-    title: "JS Developers",
+    title: "Javascript Developers",
     contributors: [contributor1, contributor2, contributor3],
     rating: 4.8,
   },

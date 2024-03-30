@@ -9,9 +9,16 @@ import videocall from "../../../../assets/videocall.svg";
 import threedots from "../../../../assets/threedots.svg";
 import { IoSend } from "react-icons/io5";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 function Page() {
   const [message, setMessage] = useState("");
+  const searchParams = useSearchParams();
+  const user = searchParams.get("user");
+  const designation = searchParams.get("designation");
+  const image = searchParams.get("image");
+  console.log("user", user);
+
   const [chat, setChat] = useState([
     {
       id: 1,
@@ -97,7 +104,7 @@ function Page() {
           <div className="flex justify-between">
             <div className="flex space-x-3 items-center">
               <Image src={profile} alt="" />
-              <p className="text-lg font-medium">Karthik Anand</p>
+              <p className="text-lg font-medium">{user}</p>
             </div>
             <div className="flex space-x-8">
               <Image src={call} alt="" />
@@ -168,9 +175,9 @@ function Page() {
             <div className="flex mt-5 space-x-3">
               <Image src={profile} alt="" />
               <div>
-                <p className="text-lg font-medium">Karthik Anand</p>
-                <p className="text-[#747474] text-[12px]">UI Developer</p>
-                <p className="text-[10px] font-bold">Canada</p>
+                <p className="text-lg font-medium">{user}</p>
+                <p className="text-[#747474] text-[12px]">{designation}</p>
+                <p className="text-[10px] font-bold">India</p>
               </div>
             </div>
           </div>

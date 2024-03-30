@@ -101,23 +101,16 @@ const page: React.FC = () => {
     null
   );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const filteredDevelopers = gigData.filter((dev) =>
+  const { address, didData, balance, ipfsData, userrole, getusers, gigdata } =
+    useEthereum();
+  const filteredDevelopers = getusers?.filter((dev) =>
     dev.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const handleViewMore = (dev: GigData) => {
     setSelectedDeveloper(dev);
     setIsModalOpen(true);
   };
-  const {
-    address,
-    didData,
-    balance,
-    ipfsData,
-    userrole,
-    getusers,
-    gigdata,
-    getallusers,
-  } = useEthereum();
+
   const [matchingDevelopers, setMatchingDevelopers] = useState([]);
   useEffect(() => {
     async function matchDevelopersByLanguage() {
@@ -194,7 +187,7 @@ const page: React.FC = () => {
   }, [gigdata]);
 
   console.log("address", address);
-  console.log("getalldidinfo", getallusers);
+  console.log("getalldidinfo", getusers);
   useEffect(() => {
     if (isModalOpen) {
       document.body.classList.add("no-scroll");
@@ -214,28 +207,32 @@ const page: React.FC = () => {
       <ProtectedNavbar onSearch={setSearchTerm} />
       <div className="px-20  space-x-3 flex items-center mt-12">
         <Link href="/Dashboard">
-          <Image src={home} alt="home" className="h-6 w-auto" />
+          <Image src={home} alt="" className="h-6 w-auto" />
         </Link>
-        <Image src={chroneright} alt="home" className="h-4 w-auto" />
+        <Image src={chroneright} alt="" className="h-4 w-auto" />
         <p className="text-[#747474] text-md  uppercase">{role}</p>
       </div>
       <div className="mt-5 grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4  gap-4 md:mx-8 mx-5 lg:mx-12 xl:mx-16 2xl:mx-20">
-        {filteredDevelopers.length > 0 ? (
-          filteredDevelopers.map((dev, index) => (
+        {filteredDevelopers?.length > 0 ? (
+          filteredDevelopers?.map((dev, index) => (
             <div key={index} className="bg-[#B8F6FF] w-[320px] rounded-3xl">
               <div className="flex justify-center pt-8 pb-4 items-center">
-                <Image src={dev.image} alt="home" className="h-24 w-auto" />
-                <Image
+                <img
+                  src={dev.profileImage}
+                  alt=""
+                  className="h-24 rounded-full w-auto"
+                />
+                <img
                   src={ellipse}
-                  alt="home"
+                  alt=""
                   className="h-28 lg:h-[110px] ml-8 absolute w-auto"
                 />
               </div>
               <p className="text-lg text-center font-bold">{dev.name}</p>
               <p className="text-center">{dev.role}</p>
               <div className="flex justify-center items-center space-x-2">
-                <Image src={star} alt="home" className="h-4  w-auto" />
-                <p>{dev.rating}/5 </p>
+                <Image src={star} alt="" className="h-4  w-auto" />
+                <p>4.5/5 </p>
               </div>
               <p className="w-80 text-sm py-2 text-center px-5">
                 {dev.description}

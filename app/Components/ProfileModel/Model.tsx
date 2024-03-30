@@ -7,8 +7,8 @@ import Link from "next/link";
 interface GigData {
   id?: number;
   name?: string;
-  role?: string;
-  image?: any;
+  designation?: string;
+  profileImage?: any;
   rating?: string;
   description: string;
   location: string;
@@ -36,10 +36,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         <div className="">
           <div className="flex items-center px-10 justify-between">
             <div className="flex space-x-5  items-center">
-              <Image src={data.image} alt="img" width="100" height="100" />
+              <Image
+                src={data.profileImage}
+                alt="img"
+                width="100"
+                height="100"
+                className="rounded-full"
+              />
               <div>
                 <p className="text-lg font-bold">{data.name}</p>
-                <p>{data.role}</p>
+                <p>{data.designation}</p>
                 <div className="flex  items-center space-x-2">
                   <Image src={star} alt="home" className="h-4  w-auto" />
                   <p>{data.rating}/5 </p>
@@ -58,17 +64,25 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               <p className="w-[650px] ">{data.description}</p>
               <div className="bg-[#FBF4EE] px-6 py-4 rounded-lg">
                 <div className="flex  space-x-5  items-center">
-                  <Image src={data.image} alt="img" width="50" height="50" />
+                  <Image
+                    src={data.profileImage}
+                    alt="img"
+                    width="50"
+                    height="50"
+                    className="rounded-full"
+                  />
                   <div>
                     <p className="text-lg font-bold">{data.name}</p>
-                    <p>{data.role}</p>
+                    <p>{data.designation}</p>
                     <div className="flex  items-center space-x-2">
                       <Image src={star} alt="home" className="h-4  w-auto" />
                       <p>{data.rating}/5 </p>
                     </div>
                   </div>
                 </div>
-                <Link href={`/Dashboard/${data.id}/Connect`}>
+                <Link
+                  href={`/Dashboard/${data.name}/Connect?user=${data.name}?designation=${data.designation}`}
+                >
                   <button className="bg-black items-center flex space-x-3 mt-3 text-lg font-semibold text-white px-20 py-2 rounded-lg">
                     <Image src={send} alt="" />
                     <p> Contact me</p>
