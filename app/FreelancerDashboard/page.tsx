@@ -104,7 +104,7 @@ const Jobs = [
 function Page() {
   const [searchTerm, setSearchTerm] = useState("");
   const [likedJobs, setLikedJobs] = useState<JobIdType[]>([]);
-
+  const [Jobs, setJobs] = useState([]);
   const toggleLike = (jobId: JobIdType) => {
     setLikedJobs((prevLikedJobs) => {
       const isAlreadyLiked = prevLikedJobs.includes(jobId);
@@ -120,13 +120,13 @@ function Page() {
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOption, setSortOption] = useState("Relevance");
-  const [filteredJobs, setFilteredJobs] = useState(Jobs);
+  const [filteredJobs, setFilteredJobs] = useState([]); // Initialize as empty array for filtered jobs
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 3;
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
-  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+  const currentJobs = filteredJobs?.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(filteredJobs?.length / jobsPerPage);
   const [category, setCategory] = useState("");
   const [gigDetails, setGigDetails] = useState("");
   const [budget, setBudget] = useState("");
@@ -160,7 +160,7 @@ function Page() {
     setSortOption(value);
   };
   useEffect(() => {
-    let updatedJobs = [...Jobs].filter(
+    let updatedJobs = Jobs.filter(
       (job) =>
         job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -178,12 +178,28 @@ function Page() {
 
     setFilteredJobs(updatedJobs);
     setCurrentPage(1);
-  }, [searchTerm, selectedCategory, sortOption]);
+  }, [Jobs, searchTerm, selectedCategory, sortOption]);
 
   const handleSearchChange = (searchTerm: any) => {
     setSearchTerm(searchTerm);
   };
 
+  useEffect(() => {
+    async function fetchPostedGigs() {
+      const url = `https://talentledger-be.vercel.app/api/all-gigs`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setJobs(data?.gigs || []);
+        setFilteredJobs(data?.gigs || []); // Also set filteredJobs here to update the UI initially
+      } catch (error) {
+        console.error("Failed to fetch jobs data:", error);
+      }
+    }
+    fetchPostedGigs();
+  }, []);
+
+  console.log("jobs", Jobs);
   return (
     <div className="pb-10">
       <ProtectedNavbar onSearch={handleSearchChange} />
@@ -269,7 +285,7 @@ function Page() {
         </div>
       </div>
 
-      {currentJobs.length > 0 ? (
+      {currentJobs?.length > 0 ? (
         <div className="flex justify-center lg:px-24 py-6 gap-4 xl:gap-8 flex-wrap">
           {currentJobs.map((job) => (
             <div
@@ -303,18 +319,22 @@ function Page() {
               </p>
               <p className="text-[#747474] py-2 w-80">{job.description}</p>
               <div className="flex justify-between">
-                <div className="flex space-x-2 items-center">
-                  <Image
-                    className="w-auto h-5"
-                    src={paymenttick}
-                    alt="payment verified"
-                  />
-                  <p className="text-xl font-semibold">Payment Verified</p>
+                <div>
+                  <div className="flex space-x-2 items-center">
+                    <Image
+                      className="w-auto h-5"
+                      src={paymenttick}
+                      alt="payment verified"
+                    />
+                    <p className="text-xl font-semibold">Payment Verified</p>
+                  </div>
+                  <p className="pt-3">{job.budget} TLY</p>
                 </div>
+
                 <div className="flex space-x-2 items-center">
                   <Image src={star} alt="" />
                   <p>
-                    {job.rating}{" "}
+                    4.5/5
                     <span className="text-[#747474]">({job.reviews}+)</span>
                   </p>
                 </div>
@@ -330,8 +350,8 @@ function Page() {
       <div className="px-16 pt-6 flex justify-between">
         <p className="text-[#4B4B4B] text-sm">
           Showing {indexOfFirstJob + 1}-
-          {Math.min(indexOfLastJob, filteredJobs.length)} of{" "}
-          {filteredJobs.length}
+          {Math.min(indexOfLastJob, filteredJobs?.length)} of{" "}
+          {filteredJobs?.length}
         </p>
         <div className="flex space-x-2">
           <button
@@ -346,7 +366,9 @@ function Page() {
               key={number}
               onClick={() => setCurrentPage(number)}
               className={`px-3 py-1 rounded ${
-                currentPage === number ? "bg-[#00CBA0] text-white" : "bg-white"
+                currentPage === number
+                  ? "bg-[#009DB5] font-bold text-white"
+                  : "bg-white"
               }`}
             >
               {number}

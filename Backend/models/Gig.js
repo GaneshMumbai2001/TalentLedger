@@ -5,11 +5,9 @@ const gigSchema = new mongoose.Schema({
   description: { type: String, required: true },
   budget: { type: Number, required: true },
   skillsRequired: { type: [String], required: true },
-  didOfPosted: { type: String, required: true },
   providerAddress: { type: String, required: true },
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
   timeline: { type: String, required: true },

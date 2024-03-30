@@ -9,6 +9,7 @@ router.post("/post-gig", async (req, res) => {
     const {
       title,
       description,
+      address,
       budget,
       timeline,
       tasks,
@@ -16,50 +17,30 @@ router.post("/post-gig", async (req, res) => {
       skills,
       escrowId,
     } = req.body;
-    console.log(
-      title,
-      description,
-      budget,
-      timeline,
-      tasks,
-      payments,
-      skills,
-      escrowId
-    );
-    const userId = req.userId;
-    const user = await User.findById(req.userId);
-    console.log("user", user);
-    const did = user._id;
-    const address = user.address;
 
     let combinedTasks = tasks.map((description, index) => ({
       description: description,
-      completed: false, // Assuming tasks are initially incomplete
+      completed: false,
       payment: {
-        amount: payments[index] || 0, // Use the payment amount from the paymentAmounts array or default to 0
-        paymentStatus: false, // Assuming payment has not been made initially
-        paymentDetails: "", // Assuming no details initially; adjust as needed
+        amount: payments[index] || 0,
+        paymentStatus: false,
+        paymentDetails: "",
       },
     }));
 
-    // Create a new gig
     const newGig = new Gig({
       title,
       description,
       budget,
       timeline,
       tasks: combinedTasks,
-
-      didOfPosted: did,
-      createdBy: userId,
+      createdBy: address,
       selectedCandidate: null,
       skillsRequired: skills,
       escrowId: escrowId,
       providerAddress: address,
     });
     await newGig.save();
-
-    console.log("new gig", newGig);
     res.status(201).json({ message: "Gig posted successfully" });
   } catch (error) {
     console.error(error);
@@ -639,12 +620,9 @@ router.put("/drop-gig/:gigId", async (req, res) => {
   }
 });
 
-// GET endpoint to get all posted gigs
 router.get("/all-gigs", async (req, res) => {
   try {
-    // Find all gigs in the database
     const allGigs = await Gig.find();
-
     res.status(200).json({ gigs: allGigs });
   } catch (error) {
     console.error(error);

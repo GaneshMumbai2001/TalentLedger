@@ -107,7 +107,11 @@ function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
               onClick={toggleProfileDropdown}
               className="relative cursor-pointer"
             >
-              <Image src={profile} alt="profile" />
+              <img
+                src={ipfsData.profileImage ?? profile}
+                alt="profile"
+                className="w-12 h-auto rounded-full"
+              />
               {isProfileDropdownOpen && (
                 <div className="absolute -right-4 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
                   <Link
@@ -161,7 +165,7 @@ function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
             </p>
           ))}
           <Image
-            src={profile}
+            src={ipfsData?.profileImage ?? profile}
             alt="profile"
             className="cursor-pointer"
             width={50}

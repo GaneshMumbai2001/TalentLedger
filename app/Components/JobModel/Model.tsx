@@ -12,8 +12,9 @@ interface JobData {
   image?: any;
   rating?: string;
   description: string;
+  createdAt?: string;
   location: string;
-  skills: string[];
+  skillsRequired: string[];
 }
 
 interface ModalProps {
@@ -23,6 +24,24 @@ interface ModalProps {
 }
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, job }) => {
   if (!isOpen || !job) return null;
+  const timeAgo = (dateString) => {
+    const now = new Date();
+    const postedDate = new Date(dateString);
+    const seconds = Math.round((now - postedDate) / 1000);
+    const minutes = Math.round(seconds / 60);
+    const hours = Math.round(minutes / 60);
+    const days = Math.round(hours / 24);
+
+    if (seconds < 60) {
+      return `${seconds} seconds ago`;
+    } else if (minutes < 60) {
+      return `${minutes} minutes ago`;
+    } else if (hours < 24) {
+      return `${hours} hours ago`;
+    } else {
+      return `${days} days ago`;
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -38,11 +57,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, job }) => {
         <div className="flex space-x-3">
           <div className="py-4">
             <h2 className="text-xl font-bold">{job.title}</h2>
-            <p className="text-[#747474]">Posted 1 hour ago </p>
+            <p className="text-[#747474]">
+              Posted {timeAgo(job.createdAt)} ago
+            </p>
             <p className="mt-5">{job.description}</p>
             <p className="text-xl mt-8 font-bold">Skills and Expertise</p>
             <div className=" px-3 py-2  flex flex-wrap gap-3 uppercase">
-              {job?.skills?.map((skill: any, index: any) => (
+              {job?.skillsRequired?.map((skill: any, index: any) => (
                 <span
                   key={index}
                   className="px-4 text-sm py-1 font-medium bg-[#E2E2E3] rounded-full"
