@@ -1,21 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../Components/SearchBar";
 import RepoList from "../Components/RepoList";
 import RepoDetails from "../Components/RepoDetails";
+import { useSearchParams } from "next/navigation";
+
 export default function Page() {
   const [repos, setRepos] = useState([]);
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [error, setError] = useState(null);
+  const searchParams = useSearchParams();
+
   const [isLoading, setIsLoading] = useState(false);
   const [ownerInfo, setOwnerInfo] = useState(null);
-
-  const fetchRepos = async (username) => {
+  const id = searchParams.get("id");
+  console.log("user", id);
+  useEffect(() => {
+    fetchRepos();
+  }, []);
+  const fetchRepos = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await fetch(
-        `https://talentledger-be.vercel.app/api/user/${username}/repos`
+        `https://talentledger-be.vercel.app/api/user/${id}/repos`
       );
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
@@ -52,13 +60,13 @@ export default function Page() {
 
   return (
     <div className="bg-[#7752FE] min-h-screen pb-5">
-      <SearchBar onSearch={fetchRepos} />
+      {/* <SearchBar onSearch={fetchRepos} /> */}
 
       {isLoading && <div className="text-center">Loading the data...</div>}
       {error && <div className="text-red-500 text-center">Error: {error}</div>}
 
       {!isLoading && ownerInfo && (
-        <div className="flex flex-col items-center ">
+        <div className="flex  pt-20 flex-col items-center ">
           <img
             src={ownerInfo.avatar_url}
             alt={ownerInfo.login}

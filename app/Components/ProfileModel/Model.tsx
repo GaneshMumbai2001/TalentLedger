@@ -53,9 +53,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               </div>
             </div>
             <div>
-              <button className="bg-[#00CBA0] font-semibold text-md px-5 py-2 rounded-lg ">
-                More about me
-              </button>
+              <Link href={`/ContributionData?id=${data?.links[0]?.linkedin}`}>
+                <button className="bg-[#00CBA0] font-semibold text-md px-5 py-2 rounded-lg ">
+                  More about me
+                </button>
+              </Link>
             </div>
           </div>
           <div className="px-10">
