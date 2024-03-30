@@ -14,14 +14,12 @@ export const createdid = async ({ address, role, ipfsHash }) => {
   if (!window.ethereum) {
     throw new Error("Ethereum object not found, install MetaMask.");
   }
-
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
   const signer = provider.getSigner();
-
   const Role = new ethers.Contract(gigidadd, Token, signer);
-
-  const tokenId = await Role.registerDID(address, role, ipfsHash);
+  const tokenId = await Role.registerDID(address, role, ipfsHash, {
+    gasLimit: 60000,
+  });
   console.log(tokenId);
   return tokenId;
 };

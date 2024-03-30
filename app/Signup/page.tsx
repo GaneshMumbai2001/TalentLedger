@@ -316,23 +316,6 @@ which i can simply parse it as json.
       setNewSkill("");
     }
   };
-  const ipfsHashToBytes32 = (ipfsHash) => {
-    const trimmedHash = ipfsHash.trim();
-
-    try {
-      const bytes = bs58.decode(trimmedHash);
-      let hexString = bytes.toString("hex");
-
-      if (hexString.length > 64) {
-        hexString = hexString.substring(0, 64);
-      }
-
-      return "0x" + hexString;
-    } catch (error) {
-      console.error("Error decoding IPFS hash:", error.message);
-      throw error;
-    }
-  };
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -475,8 +458,6 @@ which i can simply parse it as json.
       if (selectedRole == "Provider") {
         const role = 0;
         await createdid({ address, role, ipfsHash });
-        const userDetails = { address, role, ipfsHash };
-        dispatch(setToken(userDetails));
         toast.success("Happy to Onboard to our platform!");
         router.push("/Dashboard");
       } else {
