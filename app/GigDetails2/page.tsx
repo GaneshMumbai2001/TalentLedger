@@ -7,7 +7,10 @@ import verified from "../../assets/verified.svg";
 import dollar from "../../assets/dollar.svg";
 import star from "../../assets/star.svg";
 import profile from "../../assets/profile.svg";
+import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
+import { ToastContainer, toast } from "react-toastify";
+import { raiseDispute } from "@/config/BlockchainServices";
 
 const gigData = {
   id: 1,
@@ -66,7 +69,11 @@ function page() {
   };
 
   const estimatedPayment = gig.totalPrice - gig.serviceFee;
-
+  async function disputefun() {
+    const raise = raiseDispute();
+    console.log("raise", raise);
+    toast.info("Raising disputing..... against 0x...");
+  }
   return (
     <div className="pb-10">
       <ProtectedNavbar />
@@ -221,7 +228,10 @@ function page() {
                 <p className="text-[#F24E4D] bg-[#FFE5E4] px-4 py-1 rounded-full">
                   {milestone.paymentStatus}
                 </p>
-                <button className="text-[#FFC830] bg-[#FCEAC2] px-4 py-1 rounded-full">
+                <button
+                  onClick={disputefun}
+                  className="text-[#FFC830] bg-[#FCEAC2] px-4 py-1 rounded-full"
+                >
                   {" "}
                   Dispute
                 </button>
@@ -229,9 +239,15 @@ function page() {
                   {" "}
                   Reject
                 </button>
-                <button className="border flex space-x-2 items-center bg-[#00CBA0] px-8 rounded-lg font-medium py-2 text-sm">
+                <button
+                  onClick={() => {
+                    toast.success("Approved for the payment!");
+                  }}
+                  className="border flex space-x-2 items-center bg-[#00CBA0] px-8 rounded-lg font-medium py-2 text-sm"
+                >
                   <p>Approve</p> <Image src={verified} alt="" />
                 </button>
+                <ToastContainer />
               </div>
             </div>
           </div>

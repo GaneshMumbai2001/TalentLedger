@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import { ethers } from "ethers";
 import Token from "../contracts/did.json";
+import Escrow from "../contracts/escrow.json";
 
 const isBrowser = () => typeof window !== "undefined";
 const { ethereum } = isBrowser();
@@ -9,6 +10,26 @@ if (ethereum) {
   isBrowser().web3 = new Web3(isBrowser().web3.currentProvider);
 }
 const gigidadd = "0x45660CDFA3691F904f7d387C8081F842e927918B";
+const escrowadd = "0x4bD782b05E888c961b7e534d6ee923f464332Ab6";
+
+export const raiseDispute = async () => {
+  if (!window.ethereum) {
+    throw new Error("Ethereum object not found, install MetaMask.");
+  }
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const address = "0xEb60eF428D2f2469AD99f978c8Acc250A383A11E";
+  const reason = "This person is against the contract";
+  const contract = new ethers.Contract(escrowadd, Escrow, signer);
+  try {
+    const didInfo = await contract.raiseDispute(address, reason);
+    console.log("Registered did:", didInfo);
+    return didInfo;
+  } catch (error) {
+    console.error("Error fetching DID info:", error);
+    throw error;
+  }
+};
 
 export const createdid = async ({ address, role, ipfsHash }) => {
   if (!window.ethereum) {
