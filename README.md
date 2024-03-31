@@ -52,5 +52,9 @@ Talent Ledger is a blockchain-based platform designed to revolutionize the job m
 
 ## *Video Link:*
 
+https://youtube.com/playlist?list=PLbwgX744qBUBhpSRuvN2gk1u3V3_e7oM8&si=MPoOJrOFrOoi45v2
+
 ## Presentation Link:
+
+https://www.canva.com/design/DAGA3UEOtDI/th0ezH-2nuLkjkB2oB--0Q/edit?utm_content=DAGA3UEOtDI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
