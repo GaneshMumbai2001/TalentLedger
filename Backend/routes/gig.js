@@ -331,46 +331,43 @@ router.post("/apply-for-gig", async (req, res) => {
 router.post("/selectApplicant", async (req, res) => {
   console.log("Selecting candidate");
   try {
-    const { gigId, applicantId } = req.body; // Or wherever these values are coming from
+    const { address } = req.body;
+    const gigsCreatedByUser = await Gig.find({ createdBy: address });
 
-    const userId = req.userId;
-
-    console.log("User ID: ", applicantId);
-    console.log("Gig ID: ", gigId);
-
-    console.log("applicant Id", applicantId);
-
-    // Check if the user making the request is the gig creator
-    const gig = await Gig.findById(gigId);
-
-    const Applicant = await User.findById(applicantId);
-    console.log("applicant", Applicant);
-
-    console.log("Gig", gig);
-    if (!gig || gig.createdBy._id.toString() !== userId) {
-      console.log("issue in 403");
+    if (!gigsCreatedByUser.length) {
       return res.status(403).json({
-        message: "You are not authorized to select a candidate for this gig",
+        message: "You have not created any gigs.",
       });
     }
-    // Check if the selected candidate is in the gig's applicants list
-    if (!gig.applicants.includes(applicantId)) {
-      return res.status(400).json({
-        message: "The selected candidate is not an applicant for this gig",
+
+    const { applicantAddress } = req.body;
+
+    const gigWithCandidateApplication = gigsCreatedByUser.find((gig) =>
+      gig.applicants.includes(applicantAddress)
+    );
+
+    if (!gigWithCandidateApplication) {
+      return res.status(404).json({
+        message: "The candidate has not applied for any of your gigs",
       });
     }
-    // Update the gig's selectedCandidate field with the selected candidate's ID
-    gig.selectedCandidate = applicantId;
-    await gig.save();
-    res.status(201).json({
-      message: "Candidate selected successfully",
-      userAddress: Applicant.address,
+
+    gigWithCandidateApplication.selectedCandidate = applicantAddress;
+    await gigWithCandidateApplication.save();
+
+    res.status(200).json({
+      message: "Candidate selected successfully for one of your gigs",
+      details: {
+        gigId: gigWithCandidateApplication._id,
+        gigTitle: gigWithCandidateApplication.title,
+      },
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 router.post("/notifyAsComplete", async (req, res) => {
   console.log("Notifying as complete");
 
