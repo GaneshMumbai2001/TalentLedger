@@ -35,7 +35,7 @@ Talent Ledger is a blockchain-based platform designed to revolutionize the job m
 
 ## Tech Stacks:
 - *Blockchain:* Ethereum, Polygon
-- *Frontend:* React.js
+- *Frontend:* Next.js , Tailwind CSS
 - *Backend:* Node.js, Express.js
 - *Database:* IPFS for decentralized storage
 - *Security:* Implementations of zero-knowledge proofs for privacy
@@ -44,9 +44,8 @@ Talent Ledger is a blockchain-based platform designed to revolutionize the job m
 1. Clone the repository from GitHub.
 2. Install Node.js and npm on your machine.
 3. Run npm install to install project dependencies.
-4. Set up a local Ethereum blockchain instance using Ganache.
-5. Deploy smart contracts to the blockchain using Truffle.
-6. Start the application with npm start.
+4. Deploy smart contracts to the blockchain using Remix.
+5. Start the application with npm run dev.
 
 ## Demo Pages:
 
