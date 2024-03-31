@@ -51,6 +51,11 @@ function ProtectedNavbar({ onSearch }: ProtectedNavbarProps) {
       path: "/PostGig",
     });
     navLinks.splice(1, 0, {
+      name: "Disputed Gigs",
+      id: "disputed",
+      path: "/DisputedGigs",
+    });
+    navLinks.splice(1, 0, {
       name: "Ongoing Gigs",
       id: "Ongoing",
       path: "/GigDetails2",
