@@ -6,6 +6,8 @@ import expert from "../../assets/expert.svg";
 import dollar from "../../assets/dollar.svg";
 import Image from "next/image";
 
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 const gigData = {
   id: 1,
   jobtitle: "Convert my mobile Figma UI to web UI",
@@ -42,6 +44,9 @@ function page() {
   };
 
   const markAsCompleted = () => {
+    toast.success(
+      "Completed Notification sent to Provided... Payment will be processed shortly!"
+    );
     setMilestone({ ...milestone, status: "Completed", paymentStatus: "Paid" });
   };
   const estimatedPayment = gig.totalPrice - gig.serviceFee;
@@ -184,6 +189,7 @@ function page() {
               </div>
             </div>
           </div>
+          <ToastContainer />
         </div>
       </div>
     </div>
