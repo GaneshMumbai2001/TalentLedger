@@ -1,4 +1,6 @@
-![WhatsApp Image 2024-03-31 at 08 49 02_87e3f701](https://github.com/vmmuthu31/TalentLedger/assets/111454596/12863c3b-2e7c-451d-988e-2fbe8b7a902a)# Project Name: Talent Ledger
+![WhatsApp Image 2024-03-31 at 08 49 02_87e3f701](https://github.com/vmmuthu31/TalentLedger/assets/111454596/12863c3b-2e7c-451d-988e-2fbe8b7a902a)
+  
+  # Project Name: Talent Ledger
 
 ## Description:
 Talent Ledger is a blockchain-based platform designed to revolutionize the job market by enhancing transparency, security, and efficiency in recruitment processes. It aims to bridge the gap between job seekers and employers, ensuring a seamless, fair, and privacy-focused job search experience.
