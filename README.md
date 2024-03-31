@@ -64,6 +64,8 @@ Talent Ledger is a blockchain-based platform designed to revolutionize the job m
 
 ![WhatsApp Image 2024-03-31 at 08 52 33_1c394359](https://github.com/vmmuthu31/TalentLedger/assets/111454596/9c9fb9b9-190e-4a26-9f34-a8a7a0039983)
 
+![Uploading WhatsApp Image 2024-03-31 at 09.19.20_1bf37391.jpg…]()
+
 
 
 ## *Video Link:*
