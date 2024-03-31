@@ -9,8 +9,8 @@ if (ethereum) {
   isBrowser().web3 = new Web3(ethereum);
   isBrowser().web3 = new Web3(isBrowser().web3.currentProvider);
 }
-const gigidadd = "0x45660CDFA3691F904f7d387C8081F842e927918B";
-const escrowadd = "0x4bD782b05E888c961b7e534d6ee923f464332Ab6";
+const gigidadd = "0x5410A859ed6ed8964156C976580eFc4325Cf8D52";
+const escrowadd = "0x9435060c40A5D2C3aA48F792dD81C74Bd5AF7Fe2";
 
 export const raiseDispute = async () => {
   if (!window.ethereum) {

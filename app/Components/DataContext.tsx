@@ -40,6 +40,17 @@ query MyQuery {
     to
   }
 }`;
+const disputequery = `
+query MyQuery {
+  disputedgigs(id: "", subgraphError: allow) {
+    address
+    reason
+    vote
+    blockNumber
+    blockTimestamp
+  }
+  
+}`;
 const client = new ApolloClient({
   uri: QueryURL,
   cache: new InMemoryCache(),
@@ -66,15 +77,24 @@ export const EthereumProvider = ({ children }) => {
           console.log("Data from GraphQL", finalData.data.didregistereds);
           setDataUpdates(finalData.data.didregistereds);
         });
-      // client
-      //   .query({
-      //     query: gql(escrowquery),
-      //     variables: { userAddress: address },
-      //   })
-      //   .then((data) => {
-      //     const finalData = data;
-      //     console.log("Data from GraphQL", finalData.data.didregistereds);
-      //   });
+      client
+        .query({
+          query: gql(escrowquery),
+          variables: { userAddress: address },
+        })
+        .then((data) => {
+          const finalData = data;
+          console.log("Data from GraphQL", finalData.data.escrowClaimed);
+        });
+      client
+        .query({
+          query: gql(disputequery),
+          variables: { userAddress: address },
+        })
+        .then((data) => {
+          const finalData = data;
+          console.log("Data from GraphQL", finalData.data.disputedgigs);
+        });
     };
     getDataUpdates();
   }, []);
