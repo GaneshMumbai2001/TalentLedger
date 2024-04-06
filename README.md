@@ -76,5 +76,5 @@ https://youtube.com/playlist?list=PLbwgX744qBUBhpSRuvN2gk1u3V3_e7oM8&si=MPoOJrOF
 
 ## Presentation Link:
 
-https://www.canva.com/design/DAGA3UEOtDI/th0ezH-2nuLkjkB2oB--0Q/edit?utm_content=DAGA3UEOtDI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+https://www.canva.com/design/DAGBpab8Ek4/Xbda05IMgqmoOefISnE_hA/edit?utm_content=DAGBpab8Ek4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
